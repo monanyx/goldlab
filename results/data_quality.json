@@ -1,0 +1,55 @@
+{
+  "source_rows": 60143,
+  "rows_after_clean": 49786,
+  "duplicates_removed": 0,
+  "invalid_rows_removed": 0,
+  "weekend_rows_removed": 10357,
+  "spikes_removed": 0,
+  "ohlc_fixed": 0,
+  "bar_minutes": 15,
+  "first_bar": "2024-09-23 00:00:00+00:00",
+  "last_bar": "2026-10-07 00:00:00+00:00",
+  "intraday_gaps": 21,
+  "largest_gaps": [
+    {
+      "bar_after_gap": "2024-12-25 23:00:00+00:00",
+      "minutes": 1710
+    },
+    {
+      "bar_after_gap": "2025-01-01 23:00:00+00:00",
+      "minutes": 1515
+    },
+    {
+      "bar_after_gap": "2024-11-28 23:00:00+00:00",
+      "minutes": 225
+    },
+    {
+      "bar_after_gap": "2025-01-20 23:00:00+00:00",
+      "minutes": 225
+    },
+    {
+      "bar_after_gap": "2025-02-17 23:00:00+00:00",
+      "minutes": 225
+    },
+    {
+      "bar_after_gap": "2025-04-18 03:30:00+00:00",
+      "minutes": 135
+    },
+    {
+      "bar_after_gap": "2025-04-18 11:15:00+00:00",
+      "minutes": 135
+    },
+    {
+      "bar_after_gap": "2025-04-18 19:00:00+00:00",
+      "minutes": 135
+    },
+    {
+      "bar_after_gap": "2025-04-18 00:00:00+00:00",
+      "minutes": 75
+    },
+    {
+      "bar_after_gap": "2025-04-18 08:00:00+00:00",
+      "minutes": 75
+    }
+  ]
+}

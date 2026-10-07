@@ -1,0 +1,27 @@
+{
+  "costs": {
+    "spread": 0.35,
+    "session_spread_mult": {
+      "Asia": 1.5,
+      "Off": 2.0
+    },
+    "slippage": 0.05,
+    "commission_per_oz": 0.0,
+    "swap_long": -0.6,
+    "swap_short": -0.2
+  },
+  "risk": {
+    "risk_pct": 0.01,
+    "daily_loss_limit_pct": 0.03,
+    "max_trades_per_day": 3,
+    "initial_equity": 100000.0,
+    "min_units": 1.0,
+    "unit_step": 1.0,
+    "max_leverage": 20.0,
+    "no_entry_after": null,
+    "no_entry_tz": "Europe/Vienna"
+  },
+  "is_fraction": 0.7,
+  "train_months": 12,
+  "test_months": 3
+}
