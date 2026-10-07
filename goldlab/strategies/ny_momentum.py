@@ -15,9 +15,8 @@ from typing import ClassVar
 import numpy as np
 import pandas as pd
 
-from ..engine import Order, StrategySignals
+from ..engine import Order, StrategySignals, bar_minutes
 from ..features import daily_atr, day_groups, ny_minutes
-from ..sessions import minute_diffs
 from .base import Strategy
 
 
@@ -45,7 +44,7 @@ class NYMomentum(Strategy):
         start = int(round(self.open_hour * 60))
         flat_min = int(self.flat_hour * 60)
         flat = ~((ny >= start) & (ny < flat_min))
-        bar_min = int(round(np.median(minute_diffs(df.index[:1000])))) if len(df) > 1 else 5
+        bar_min = bar_minutes(df.index) or 15
         orders: dict[int, list[Order]] = {}
 
         for idx in day_groups(df):
@@ -65,6 +64,8 @@ class NYMomentum(Strategy):
             if abs(move) < self.thresh_atr * a:
                 continue
             side = 1 if move > 0 else -1
+            why = (f"NY open momentum: {move:+.2f} in first {self.obs_minutes} min "
+                   f"({abs(move) / a:.2f}x daily ATR >= {self.thresh_atr})")
             orders[j] = [Order(side=side, kind="market", stop_dist=self.stop_atr * a,
-                               target_r=self.target_r, expires=j + 1, tag="ny_mom")]
+                               target_r=self.target_r, tag="ny_mom", reason=why)]
         return StrategySignals(orders=orders, flat=flat)

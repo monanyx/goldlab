@@ -40,3 +40,5 @@ class RiskConfig:
     min_units: float = 1.0  # 0.01 lot = 1 oz
     unit_step: float = 1.0  # position size granularity in oz
     max_leverage: float = 20.0  # notional cap: units * price <= equity * max_leverage
+    no_entry_after: str | None = None  # "HH:MM" local time; no new entries at/after it
+    no_entry_tz: str = "Europe/Vienna"

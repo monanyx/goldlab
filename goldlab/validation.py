@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 
 from .config import CostConfig, RiskConfig
-from .engine import Backtester, BacktestResult, StrategySignals
+from .engine import Backtester, BacktestResult, StrategySignals, bar_minutes
 from .metrics import summarize
 from .strategies.base import Strategy
 
@@ -24,17 +24,14 @@ def slice_signals(sig: StrategySignals, start: int, end: int) -> StrategySignals
     orders = {}
     for i, ods in sig.orders.items():
         if start <= i < end:
-            moved = []
-            for od in ods:
-                exp = None if od.expires is None else od.expires - start
-                moved.append(replace(od, expires=exp))
-            orders[i - start] = moved
+            orders[i - start] = list(ods)
     return StrategySignals(orders=orders, flat=sig.flat[start:end])
 
 
 def run_window(df: pd.DataFrame, sig: StrategySignals, start: int, end: int,
                costs: CostConfig, risk: RiskConfig) -> BacktestResult:
-    return Backtester(costs, risk).run(df.iloc[start:end], slice_signals(sig, start, end))
+    return Backtester(costs, risk).run(df.iloc[start:end], slice_signals(sig, start, end),
+                                       minutes=bar_minutes(df.index))
 
 
 def index_at(df: pd.DataFrame, ts: pd.Timestamp) -> int:

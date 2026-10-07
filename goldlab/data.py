@@ -150,7 +150,7 @@ def resample(df: pd.DataFrame, minutes: int) -> pd.DataFrame:
 
 
 def clean(df: pd.DataFrame, target_minutes: int | None = None,
-          spike_threshold: float = 0.05) -> tuple[pd.DataFrame, DataQuality]:
+          spike_threshold: float | None = 0.05) -> tuple[pd.DataFrame, DataQuality]:
     """Sort, dedupe, drop invalid/weekend/spike bars, optionally resample, label sessions."""
     q = DataQuality(source_rows=len(df))
     df = df.sort_index()
@@ -170,13 +170,14 @@ def clean(df: pd.DataFrame, target_minutes: int | None = None,
 
     # Bad ticks: a bar whose close is far from both neighbours' closes and
     # snaps straight back. Real gaps (one-sided moves) are kept.
-    c = df["close"]
+    c = df["close"] if spike_threshold else df["close"].iloc[:0]
+    spike_threshold = spike_threshold or 1.0
     dev_prev = (c / c.shift(1) - 1).abs()
     dev_next = (c / c.shift(-1) - 1).abs()
     back = (c.shift(1) / c.shift(-1) - 1).abs()
     spike = (dev_prev > spike_threshold) & (dev_next > spike_threshold) & (back < spike_threshold / 5)
     q.spikes_removed = int(spike.sum())
-    df = df[~spike].copy()
+    df = df[~df.index.isin(spike[spike].index)].copy()
 
     hi = df[PRICE_COLS].max(axis=1)
     lo = df[PRICE_COLS].min(axis=1)

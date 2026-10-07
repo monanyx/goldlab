@@ -81,7 +81,9 @@ class VWAPFade(Strategy):
                 stop_d = self.stop_atr * a
                 if abs(dev) < self.min_reward_risk * stop_d:
                     continue
+                why = (f"VWAP fade: close {c[i]:.2f} is {abs(dev):.2f} ({abs(dev) / a:.2f}x ATR) "
+                       f"{'above' if dev > 0 else 'below'} session VWAP {vwap[pos]:.2f} and turning")
                 orders[i] = [Order(side=side, kind="market", stop_dist=stop_d,
-                                   target_price=vwap[pos], expires=i + 1,
-                                   group="vwap", tag="vwap_fade")]
+                                   target_price=vwap[pos], group="vwap", tag="vwap_fade",
+                                   reason=why)]
         return StrategySignals(orders=orders, flat=flat)

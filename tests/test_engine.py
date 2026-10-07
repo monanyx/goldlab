@@ -97,7 +97,7 @@ def test_stop_entry_bar_target_needs_close_beyond(costs, risk):
 
 def test_expired_order_does_not_fill(costs, risk):
     df = make_bars([FLAT_BAR, FLAT_BAR, (2000, 2010, 2000, 2009), FLAT_BAR])
-    od = Order(side=1, kind="stop", price=2005, stop_dist=3, target_r=1, expires=1)
+    od = Order(side=1, kind="stop", price=2005, stop_dist=3, target_r=1, expires=df.index[2])
     assert run(df, {0: [od]}, costs, risk).trades.empty
 
 
@@ -190,7 +190,7 @@ def test_position_closed_before_weekend_gap(costs, risk):
     df = label_sessions(df)
     res = run(df, {0: [Order(side=1, stop_dist=50, target_r=5)]}, costs, risk)
     t = res.trades.iloc[0]
-    assert t.exit_reason == "pre_gap"
+    assert t.exit_reason == "pre_close"
     assert t.exit_time == fri[-1]
     assert t.swap_usd == 0
 
