@@ -1,0 +1,11 @@
+.git
+.github
+data
+results
+smoke_results
+state
+tests
+*.egg-info
+__pycache__
+*.env
+.env*

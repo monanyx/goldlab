@@ -9,7 +9,7 @@ dependencies = ["numpy>=1.24", "pandas>=2.0", "matplotlib>=3.7"]
 test = ["pytest>=7"]
 
 [tool.setuptools]
-packages = ["goldlab", "goldlab.strategies"]
+packages = ["goldlab", "goldlab.strategies", "goldbot", "goldbot.brokers"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
