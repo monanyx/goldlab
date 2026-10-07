@@ -1,0 +1,28 @@
+{
+ "engine": {
+  "equity": 10000.0,
+  "pending": [],
+  "pos": null,
+  "day": "2026-10-07T00:00:00",
+  "day_start_equity": 10000.0,
+  "day_pnl": 0.0,
+  "day_trades": 0,
+  "trades": [],
+  "blocked": {
+   "daily_loss_limit": 0,
+   "max_trades": 0,
+   "after_cutoff": 0,
+   "size_zero": 0,
+   "invalid_levels": 0
+  },
+  "last_time": "2026-10-07T18:00:00+00:00"
+ },
+ "mode": "signal",
+ "strategy": "london_breakout",
+ "halted": false,
+ "telegram_offset": 917853744,
+ "summary_sent_for": null,
+ "days": {},
+ "live": {},
+ "last_error_alert": null
+}
