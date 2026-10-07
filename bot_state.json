@@ -3,7 +3,7 @@
   "equity": 10000.0,
   "pending": [],
   "pos": null,
-  "day": "2026-10-07T00:00:00",
+  "day": "2026-10-08T00:00:00",
   "day_start_equity": 10000.0,
   "day_pnl": 0.0,
   "day_trades": 0,
@@ -15,9 +15,9 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-10-07T18:00:00+00:00"
+  "last_time": "2026-10-07T22:45:00+00:00"
  },
- "mode": "signal",
+ "mode": "paper",
  "strategy": "london_breakout",
  "halted": false,
  "telegram_offset": 917853744,
