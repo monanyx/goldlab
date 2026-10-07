@@ -1,0 +1,32 @@
+# goldbot configuration. Secrets are NOT allowed here: they come from environment
+# variables (see README). Anything not set uses the default in goldbot/config.py.
+
+# signal = alerts only | paper = virtual trades + P&L | live = Capital.com DEMO orders
+mode = "signal"
+
+# Live mode needs BOTH this flag AND the environment variable
+# GOLDBOT_LIVE_CONFIRM=I_UNDERSTAND_THIS_PLACES_ORDERS_ON_DEMO. Keep false.
+live_trading_enabled = false
+
+# Kill switch: true halts everything (also: send /stop to the bot in Telegram).
+kill_switch = false
+
+# "auto" = best strategy from the research report (results/summary.json) if one
+# has a proven edge, otherwise the London breakout.
+strategy = "auto"
+
+account_balance = 10000.0       # USD, basis for the 1% position size in signal mode
+risk_pct = 0.01                 # 1% per trade (max 2%)
+daily_loss_limit_pct = 0.03     # hard: stop for the day at -3% (cannot be raised)
+max_trades_per_day = 3          # hard: cannot be raised above 3
+no_new_trades_after = "20:00"   # local time, in `timezone`
+timezone = "Europe/Vienna"
+daily_summary_time = "22:30"    # local time
+
+spread = 0.35                   # USD/oz assumed for paper fills and sizing
+slippage = 0.05
+
+data_provider = "twelvedata"    # twelvedata | alphavantage | csv
+timeframe_minutes = 15
+history_bars = 3000
+state_dir = "state"

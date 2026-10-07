@@ -1,0 +1,15 @@
+[project]
+name = "goldlab"
+version = "0.1.0"
+description = "Research-only intraday XAUUSD backtesting lab (no broker, no live trading)"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "pandas>=2.0", "matplotlib>=3.7"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.setuptools]
+packages = ["goldlab", "goldlab.strategies", "goldbot", "goldbot.brokers"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

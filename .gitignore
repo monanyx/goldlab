@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+smoke_results/
+data/*
+!data/README.md
+!data/.gitkeep
+*.egg-info/
+.venv/
+state/
+goldbot.env
+*.env
+.env
