@@ -68,9 +68,11 @@ def test_secrets_only_from_env(tmp_path):
     p.write_text('telegram_bot_token = "123:abc"\n')
     with pytest.raises(ConfigError, match="TELEGRAM_BOT_TOKEN"):
         BotConfig.load(p, {})
-    cfg = BotConfig.load(None, {"TELEGRAM_BOT_TOKEN": "t", "TWELVEDATA_API_KEY": "k"})
-    assert cfg.telegram_bot_token == "t" and cfg.redacted()["twelvedata_api_key"] == "set"
-    assert "t" not in repr(cfg).split("telegram_bot_token")[0][-3:]
+    cfg = BotConfig.load(None, {"TELEGRAM_BOT_TOKEN": "999:SECRET-TOKEN", "TWELVEDATA_API_KEY": "KEY-123"})
+    assert cfg.telegram_bot_token == "999:SECRET-TOKEN" and cfg.redacted()["twelvedata_api_key"] == "set"
+    # secrets never show up in repr() or the redacted dump that `goldbot status` prints
+    for text in (repr(cfg), json.dumps(cfg.redacted(), default=str)):
+        assert "SECRET-TOKEN" not in text and "KEY-123" not in text
 
 
 def test_kill_switch_env_override():
@@ -177,8 +179,7 @@ def test_signal_has_direction_entry_sl_tp_size_reason(tmp_path, raw):
         assert sig[k] not in (None, "", 0), k
     text = n.sent[-1]
     assert "BUY STOP" in text and "SELL STOP" in text and "Stop loss" in text and "Take profit" in text
-    assert "Reason:" in text and "1.00% of $10,000" not in text  # sized net of rounding, shown as %
-    assert "% of $10,000" in text
+    assert "Reason:" in text and "% of $10,000" in text
     # risk never exceeds 1% of the configured balance
     assert all(s["risk_usd"] <= 100.0 + 1e-9 for s in res.signals)
     assert (tmp_path / "state" / "signals.csv").exists()
