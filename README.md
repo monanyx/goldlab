@@ -10,11 +10,21 @@ This repo has two parts:
   tests and the `REPORT.md` verdict. The bot runs the lab's engine, so both
   make the same decisions.
 
-> **The strategy is not proven.** `REPORT.md` has not been produced yet
-> because no real price history has been added to `data/` (see
-> [Research lab](#research-lab-goldlab)). Until a report shows a strategy with
-> an edge after costs, the bot uses the London breakout as a fallback, and its
-> signals have no demonstrated edge. Use signal or paper mode only.
+> **No strategy has a proven edge.** [`REPORT.md`](REPORT.md) tested all three
+> strategies on 2 years of real 15-minute XAU/USD data (Sept 2024 to Oct 2026),
+> after costs:
+>
+> - **London breakout: inconclusive.** Slightly positive overall (+0.04R a
+>   trade, +7.6%), but all of that came in 2026. It lost in 2024–25, and only
+>   42% of nearby parameter settings were profitable.
+> - **NY momentum: in-sample only.** Tuned parameters looked good on the past,
+>   then lost on new data. A clear case of overfitting.
+> - **VWAP fade: no edge.** It loses money with every parameter setting tested.
+>
+> The bot therefore stays on the London breakout, the required fallback. Treat
+> its signals as an unproven experiment: use signal or paper mode only. The
+> bot's live code reproduced the backtest exactly on the last 6 months of real
+> data (51 of 51 trades, [`results/replay_check.md`](results/replay_check.md)).
 
 ---
 
@@ -294,10 +304,11 @@ for each strategy, plus PNG charts.
 
 ### Run it on GitHub (easiest)
 
-Go to **Actions → research → Run workflow**. In 20–40 minutes it:
+Go to **Actions → research → Run workflow**. In about 10 minutes it:
 
-1. Downloads 2 years of XAUUSD history from Dukascopy (free). If that fails it
-   falls back to Twelve Data, using your `TWELVEDATA_API_KEY` secret.
+1. Downloads 2 years of XAU/USD history from Twelve Data, the same feed the
+   bot trades on, using your `TWELVEDATA_API_KEY` secret. If that fails it
+   tries Dukascopy, which is free but often rate-limits GitHub's servers.
 2. Runs the full research on 15-minute bars, the same timeframe the bot uses.
    This produces `REPORT.md`, the charts in `results/` and
    `results/summary.json`.
@@ -314,14 +325,15 @@ days as a workflow artifact.
 ### Run it locally
 
 ```bash
-python -m goldlab fetch-dukascopy --start 2024-10-01 --end 2026-10-01   # or put your own CSV in data/
+python -m goldlab fetch-twelvedata --start 2024-10-01 --end 2026-10-01  # needs TWELVEDATA_API_KEY; or put your own CSV in data/
 python -m goldlab check-data --minutes 15
 python -m goldlab run --minutes 15    # -> REPORT.md, results/*.png, results/summary.json
 python -m goldlab smoke               # pipeline check on synthetic data (meaningless numbers)
 ```
 
-`python -m goldlab fetch-twelvedata --start ... --end ...` (needs
-`TWELVEDATA_API_KEY`) is the alternative data source.
+`python -m goldlab fetch-dukascopy --start ... --end ...` is the free
+alternative (no key needed). It downloads one file per day, so it is slow and
+may be rate-limited.
 
 ### What's inside
 

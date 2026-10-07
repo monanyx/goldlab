@@ -1,7 +1,8 @@
 name: research
 
 # Real-data research run:
-#   1. download >= 2 years of XAUUSD history (Dukascopy, falls back to Twelve Data)
+#   1. download >= 2 years of XAUUSD history (Twelve Data, the bot's own live feed;
+#      falls back to Dukascopy, which tends to rate-limit GitHub's runners)
 #   2. run the research lab on 15-minute bars (the bot's timeframe) -> REPORT.md + results/
 #   3. replay the bot's exact live code path over the last 6 months and check it
 #      matches the backtest -> results/replay_check.md
@@ -17,8 +18,8 @@ on:
         description: "Years of history to download"
         default: "2"
       source:
-        description: "dukascopy (free, default) or twelvedata"
-        default: "dukascopy"
+        description: "twelvedata (default, same feed as the bot) or dukascopy"
+        default: "twelvedata"
   push:
     branches: ["claude/**"]
 
@@ -36,7 +37,7 @@ jobs:
     timeout-minutes: 120
     env:
       YEARS: ${{ github.event.inputs.years || '2' }}
-      SOURCE: ${{ github.event.inputs.source || 'dukascopy' }}
+      SOURCE: ${{ github.event.inputs.source || 'twelvedata' }}
       GOLDBOT_FORBID_LIVE: "1"
     steps:
       - uses: actions/checkout@v4
@@ -58,13 +59,16 @@ jobs:
         run: |
           START=$(date -u -d "-${YEARS} years -14 days" +%Y-%m-%d)
           END=$(date -u +%Y-%m-%d)
+          fetch() {
+            python -m goldlab "fetch-$1" --start "$START" --end "$END" --out data/ \
+              && echo "DATA_SOURCE=$1" >> "$GITHUB_ENV"
+          }
+          OTHER=dukascopy; [ "$SOURCE" = "dukascopy" ] && OTHER=twelvedata
           echo "Downloading ${START} -> ${END} from ${SOURCE}"
-          if [ "$SOURCE" = "twelvedata" ]; then
-            python -m goldlab fetch-twelvedata --start "$START" --end "$END" --out data/
-          elif ! python -m goldlab fetch-dukascopy --start "$START" --end "$END" --out data/; then
-            echo "::warning::Dukascopy download failed, falling back to Twelve Data"
+          if ! fetch "$SOURCE"; then
+            echo "::warning::${SOURCE} download failed, falling back to ${OTHER}"
             rm -f data/*.csv
-            python -m goldlab fetch-twelvedata --start "$START" --end "$END" --out data/
+            fetch "$OTHER"
           fi
 
       - name: Check data
@@ -107,7 +111,7 @@ jobs:
           git config user.name "goldlab-research"
           git config user.email "goldlab-research@users.noreply.github.com"
           git add -f REPORT.md results
-          git commit -qm "Research results: ${YEARS}y XAUUSD M15 from ${SOURCE} (run ${{ github.run_id }})" \
+          git commit -qm "Research results: ${YEARS}y XAUUSD M15 from ${DATA_SOURCE:-unknown source} (run ${{ github.run_id }})" \
             || { echo "results unchanged"; exit 0; }
           BRANCH="${GITHUB_REF_NAME}"
           if [ "$BRANCH" = "main" ]; then
