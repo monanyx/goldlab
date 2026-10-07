@@ -74,11 +74,22 @@ def main(argv=None) -> int:
     p_f.add_argument("--end", required=True)
     p_f.add_argument("--out", type=Path, default=Path("data"))
 
+    p_t = sub.add_parser("fetch-twelvedata", help="download Twelve Data XAU/USD bars (needs TWELVEDATA_API_KEY)")
+    p_t.add_argument("--start", required=True)
+    p_t.add_argument("--end", required=True)
+    p_t.add_argument("--minutes", type=int, default=15)
+    p_t.add_argument("--out", type=Path, default=Path("data"))
+
     args = ap.parse_args(argv)
 
     if args.cmd == "fetch-dukascopy":
         from .dukascopy import fetch
         print(fetch(args.start, args.end, args.out))
+        return 0
+
+    if args.cmd == "fetch-twelvedata":
+        from .twelvedata import fetch as fetch_td
+        print(fetch_td(args.start, args.end, args.out, minutes=args.minutes))
         return 0
 
     if args.cmd in ("run", "check-data"):

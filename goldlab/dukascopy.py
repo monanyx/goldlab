@@ -1,8 +1,8 @@
-"""Optional downloader for Dukascopy 1-minute BID candles.
+"""Downloader for Dukascopy 1-minute BID candles (free, no account needed).
 
-NOTE: written against Dukascopy's public datafeed layout but NOT exercised in
-CI (the build environment cannot reach datafeed.dukascopy.com). The price
-divisor is auto-detected and sanity-checked; inspect the output before use.
+Used by the `research` GitHub Actions workflow. Days without a file (holidays,
+today, not yet published) are skipped. The price divisor is auto-detected and
+sanity-checked; `python -m goldlab check-data` shows what was downloaded.
 
 Each day file is LZMA-compressed binary, 24 bytes per minute:
   uint32 seconds-from-midnight-UTC, uint32 open, close, low, high, float32 volume
@@ -13,8 +13,10 @@ from __future__ import annotations
 import lzma
 import struct
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
+from typing import Callable
 
 import numpy as np
 import pandas as pd
@@ -46,29 +48,48 @@ def _scale(df: pd.DataFrame) -> pd.DataFrame:
     raise ValueError(f"Could not infer price scale (median raw price {med})")
 
 
+def _get(url: str, timeout: float = 30) -> bytes | None:
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (goldlab research)"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read()
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None  # no file for that day
+        raise
+
+
 def fetch(start: str, end: str, out: Path, symbol: str = "XAUUSD", side: str = "BID",
-          sleep: float = 0.2) -> Path:
+          sleep: float = 0.1, get: Callable[[str], bytes | None] = _get, log=print) -> Path:
     out.mkdir(parents=True, exist_ok=True)
+    days = [d for d in pd.date_range(start, end, freq="D", tz="UTC", inclusive="left") if d.dayofweek != 5]
     frames = []
-    for day in pd.date_range(start, end, freq="D", tz="UTC", inclusive="left"):
-        if day.dayofweek == 5:
-            continue
+    for n, day in enumerate(days):
         url = URL.format(sym=symbol, y=day.year, m=day.month - 1, d=day.day, side=side)
         for attempt in range(4):
             try:
-                with urllib.request.urlopen(url, timeout=30) as r:
-                    frames.append(_decode(r.read(), day))
+                blob = get(url)
                 break
-            except Exception:  # noqa: BLE001
+            except Exception as e:  # noqa: BLE001
                 if attempt == 3:
-                    raise
+                    raise RuntimeError(f"Dukascopy download failed for {day:%Y-%m-%d}: {e}") from e
                 time.sleep(2 ** (attempt + 1))
-        time.sleep(sleep)
+        if blob:
+            frames.append(_decode(blob, day))
+        if n % 50 == 0 or n == len(days) - 1:
+            log(f"[dukascopy] {day:%Y-%m-%d} ({n + 1}/{len(days)} days)", flush=True)
+        if sleep:
+            time.sleep(sleep)
+    frames = [f for f in frames if not f.empty]
+    if not frames:
+        raise RuntimeError("Dukascopy returned no data for the requested period")
     df = _scale(pd.concat(frames)).sort_index()
+    df = df[~df.index.duplicated(keep="last")]
     df.index.name = "timestamp"
     m5 = df.resample("5min", label="left", closed="left").agg(
         {"open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"}
     ).dropna(subset=["open"])
     path = out / f"{symbol}_M5_{start}_{end}_dukascopy_{side.lower()}.csv"
     m5.to_csv(path, date_format="%Y-%m-%dT%H:%M:%SZ")
+    log(f"[dukascopy] wrote {len(m5):,} M5 bars from {m5.index[0]} to {m5.index[-1]} -> {path}", flush=True)
     return path

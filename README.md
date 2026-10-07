@@ -292,16 +292,36 @@ whether any apparent edge survives out-of-sample data, walk-forward
 re-optimisation and parameter changes. The output is `REPORT.md` with a verdict
 for each strategy, plus PNG charts.
 
+### Run it on GitHub (easiest)
+
+Go to **Actions → research → Run workflow**. In 20–40 minutes it:
+
+1. Downloads 2 years of XAUUSD history from Dukascopy (free). If that fails it
+   falls back to Twelve Data, using your `TWELVEDATA_API_KEY` secret.
+2. Runs the full research on 15-minute bars, the same timeframe the bot uses.
+   This produces `REPORT.md`, the charts in `results/` and
+   `results/summary.json`.
+3. Replays the bot's exact live code over the last 6 months of real data and
+   checks it matches the backtest (`results/replay_check.md`).
+4. Pushes the results to a branch called `research-results`. Open a pull
+   request from it and merge it.
+
+Once merged, the bot's `strategy = "auto"` reads `results/summary.json`. If a
+strategy earned an `EDGE` verdict, the bot switches to it automatically.
+Otherwise it stays on the London breakout. The downloaded data is kept for 90
+days as a workflow artifact.
+
+### Run it locally
+
 ```bash
-# put >= 2 years of XAUUSD M5/M15 bars in data/   (format: data/README.md)
-python -m goldlab check-data
-python -m goldlab run             # -> REPORT.md, results/*.png, results/summary.json
-python -m goldlab smoke           # pipeline check on synthetic data (meaningless numbers)
+python -m goldlab fetch-dukascopy --start 2024-10-01 --end 2026-10-01   # or put your own CSV in data/
+python -m goldlab check-data --minutes 15
+python -m goldlab run --minutes 15    # -> REPORT.md, results/*.png, results/summary.json
+python -m goldlab smoke               # pipeline check on synthetic data (meaningless numbers)
 ```
 
-`python -m goldlab fetch-dukascopy --start 2023-01-01 --end 2025-01-01` can
-download free Dukascopy data. It hasn't been tested against the live server
-yet, because the build environment couldn't reach Dukascopy.
+`python -m goldlab fetch-twelvedata --start ... --end ...` (needs
+`TWELVEDATA_API_KEY`) is the alternative data source.
 
 ### What's inside
 
