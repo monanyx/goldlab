@@ -42,6 +42,11 @@ class ReplayResult:
     alerts: int
 
 
+def _utc(ts) -> pd.Timestamp:
+    t = pd.Timestamp(ts)
+    return t.tz_localize("UTC") if t.tzinfo is None else t.tz_convert("UTC")
+
+
 def _frame(trades) -> pd.DataFrame:
     df = pd.DataFrame([t.to_dict() if hasattr(t, "to_dict") else t for t in trades])
     if df.empty:
@@ -81,8 +86,8 @@ def replay(raw: pd.DataFrame, cfg: BotConfig, start: pd.Timestamp | None = None,
     rng = np.random.default_rng(seed)
     closes = df.index + pd.Timedelta(minutes=tf)
     first_possible = df.index[min(len(df) - 1, cfg.history_bars)] + pd.Timedelta(minutes=tf)
-    start = max(pd.Timestamp(start) if start is not None else first_possible, first_possible)
-    end = pd.Timestamp(end) if end is not None else closes[-1]
+    start = max(_utc(start) if start is not None else first_possible, first_possible)
+    end = _utc(end) if end is not None else closes[-1]
     candidates = closes[(closes >= start) & (closes <= end)]
     runs, k = [], 0
     while k < len(candidates):
