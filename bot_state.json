@@ -15,14 +15,19 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-10-07T22:45:00+00:00"
+  "last_time": "2026-10-08T12:15:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
  "halted": false,
  "telegram_offset": 917853744,
  "summary_sent_for": null,
- "days": {},
+ "days": {
+  "2026-10-08": {
+   "signals": 2,
+   "rules": {}
+  }
+ },
  "live": {},
  "last_error_alert": null
 }
