@@ -1,1 +1,2 @@
-
+trade_date,side,entry_time,entry_price,stop,target,units,risk_usd,tag,reason,exit_time,exit_price,exit_reason,costs_usd,swap_usd,pnl_usd,r_multiple,equity_after
+2026-10-12T00:00:00,-1,2026-10-12T08:15:00+00:00,4175.651703785715,4216.2071,4115.381109464288,2.0,81.5607924285705,short_break,"Break below Asia range 4179.90-4216.21 (width 36.30 = 0.45x daily ATR); London-open breakout, valid until 10:00 UTC",2026-10-12T15:00:00+00:00,4164.278990000001,session_end,0.8999999999999999,0.0,22.74542757142808,0.2788769811346319,10022.745427571428
