@@ -36,7 +36,7 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-10-14T22:30:00+00:00"
+  "last_time": "2026-10-15T10:30:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
@@ -57,6 +57,10 @@
    "rules": {}
   },
   "2026-10-14": {
+   "signals": 2,
+   "rules": {}
+  },
+  "2026-10-15": {
    "signals": 2,
    "rules": {}
   }
