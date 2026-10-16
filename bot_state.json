@@ -56,13 +56,13 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-10-16T18:15:00+00:00"
+  "last_time": "2026-10-16T20:45:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
  "halted": false,
  "telegram_offset": 917853745,
- "summary_sent_for": null,
+ "summary_sent_for": "2026-10-16",
  "days": {
   "2026-10-08": {
    "signals": 2,
