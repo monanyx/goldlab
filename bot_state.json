@@ -3,7 +3,7 @@
   "equity": 10010.230616571425,
   "pending": [],
   "pos": null,
-  "day": "2026-10-26T00:00:00",
+  "day": "2026-10-27T00:00:00",
   "day_start_equity": 10010.230616571425,
   "day_pnl": 0.0,
   "day_trades": 0,
@@ -56,13 +56,13 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-10-26T18:15:00+00:00"
+  "last_time": "2026-10-26T22:30:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
  "halted": false,
  "telegram_offset": 917853745,
- "summary_sent_for": "2026-10-16",
+ "summary_sent_for": "2026-10-26",
  "days": {
   "2026-10-08": {
    "signals": 2,
@@ -106,6 +106,10 @@
   },
   "2026-10-26": {
    "signals": 2,
+   "rules": {}
+  },
+  "2026-10-27": {
+   "signals": 0,
    "rules": {}
   }
  },
