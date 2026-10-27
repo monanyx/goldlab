@@ -2,11 +2,30 @@
  "engine": {
   "equity": 10010.230616571425,
   "pending": [],
-  "pos": null,
+  "pos": {
+   "trade_date": "2026-10-27T00:00:00",
+   "side": -1,
+   "entry_time": "2026-10-27T08:15:00+00:00",
+   "entry_price": 3993.8846943214285,
+   "stop": 4024.79272,
+   "target": 3948.085155803571,
+   "units": 3.0,
+   "risk_usd": 93.39907703571407,
+   "tag": "short_break",
+   "reason": "Break below Asia range 3997.44-4024.79 (width 27.35 = 0.41x daily ATR); London-open breakout, valid until 11:00 UTC",
+   "exit_time": null,
+   "exit_price": null,
+   "exit_reason": "",
+   "costs_usd": 0.6749999999999999,
+   "swap_usd": 0.0,
+   "pnl_usd": 0.0,
+   "r_multiple": 0.0,
+   "equity_after": 0.0
+  },
   "day": "2026-10-27T00:00:00",
   "day_start_equity": 10010.230616571425,
   "day_pnl": 0.0,
-  "day_trades": 0,
+  "day_trades": 1,
   "trades": [
    {
     "trade_date": "2026-10-12T00:00:00",
@@ -56,7 +75,7 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-10-26T22:30:00+00:00"
+  "last_time": "2026-10-27T11:00:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
@@ -109,7 +128,7 @@
    "rules": {}
   },
   "2026-10-27": {
-   "signals": 0,
+   "signals": 2,
    "rules": {}
   }
  },
