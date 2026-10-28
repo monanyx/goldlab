@@ -111,6 +111,37 @@ You need a GitHub account, a Telegram account and about 20 minutes.
     - The `goldbot-state` branch holds `paper_trades.csv`, `signals.csv` and
       `bot_state.json`. Each run also uploads them as a workflow artifact.
 
+### Make the runs punctual (strongly recommended)
+
+GitHub's built-in timer is unreliable for this repo: it fires only about 4 times
+a day, often hours late. London-breakout signals are valid for only about 3 hours
+after the London open, so they arrive after they've expired. The bot then sends
+a short "missed" note instead of the order. Paper results are unaffected,
+because the bot replays every missed bar exactly like the backtest.
+
+To get alerts on time, let a free external timer start the bot every 15 minutes:
+
+1. Create a GitHub key at https://github.com/settings/personal-access-tokens/new
+   - Name: `cron-job goldbot`. Expiration: 1 year.
+   - **Only select repositories** → `goldlab`.
+   - **Repository permissions → Actions: Read and write**. Leave everything else
+     as it is.
+   - Copy the token (`github_pat_...`).
+2. Sign up at https://cron-job.org and click **Create cronjob**.
+   - **URL:** `https://api.github.com/repos/<you>/goldlab/actions/workflows/goldbot.yml/dispatches`
+   - **Schedule:** Custom. Minutes `1,16,31,46`, hours `6`–`21`, Monday–Friday,
+     time zone **UTC**.
+   - **Advanced** tab:
+     - Method: `POST`.
+     - Body: `{"ref":"main"}`.
+     - Headers: `Authorization: Bearer <token>`,
+       `Accept: application/vnd.github+json`,
+       `X-GitHub-Api-Version: 2022-11-28`,
+       `Content-Type: application/json`.
+3. Click **Test run**. It should return **204**, and a new run appears under
+   **Actions → goldbot** within seconds. A 401/403 means a wrong token or
+   permission; a 404 means a wrong URL.
+
 **Cost note:** GitHub Actions is free for public repositories. A private
 repository gets 2,000 free minutes a month, and this schedule uses roughly
 1,400 of them.

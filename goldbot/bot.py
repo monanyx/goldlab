@@ -22,6 +22,7 @@ import pandas as pd
 
 from goldlab.data import clean
 from goldlab.engine import Engine, Event, Order, OrderPlan, bars_from_frame
+from goldlab.sessions import NY_TZ, trading_day
 
 from . import state as statefile
 from .brokers.base import Broker, BrokerError, BrokerOrder
@@ -122,7 +123,7 @@ class Bot:
         if cfg.mode == "paper":
             statefile.write_paper_trades(cfg.state_dir, st)
         if bars:
-            res.summary_sent = self._maybe_summary(st, now, bars[-1].trade_date)
+            res.summary_sent = self._maybe_summary(st, now)
         statefile.save(cfg.state_dir, st)
         return res
 
@@ -205,12 +206,15 @@ class Bot:
         why = self.engine.entry_block_reason(st.engine, next_open)
         if why is None and st.live.get("stopped_day") == str(pd.Timestamp(bar.trade_date).date()):
             why = "daily_loss_limit"
+        # A late run can find a signal whose entry window has already closed (stop orders past
+        # their expiry, or a market entry whose bar is gone). Don't present it as tradeable.
+        missed = not fresh and all(od.expires is None or od.expires <= now for od in orders)
         lines, rows, broker_orders = [], [], []
         for od in orders:
             plan, basis = (None, 0.0) if why else self._preview(st, od, bar)
             if isinstance(plan, str):
                 why = why or plan
-            status = "blocked:" + why if why else ("sent" if fresh else "late")
+            status = "blocked:" + why if why else ("missed" if missed else "sent" if fresh else "late")
             row = {"created_utc": bar.time + pd.Timedelta(minutes=cfg.timeframe_minutes),
                    "mode": cfg.mode, "strategy": self.strategy.name,
                    "direction": "BUY" if od.side == 1 else "SELL", "order_type": od.kind,
@@ -227,6 +231,17 @@ class Bot:
         if why:
             if st.rule(bar.trade_date, why):
                 self.notify.send(f"⚠️ [{self.tag}] Signal suppressed — {RULE_TEXT.get(why, why)}")
+            return
+        if missed:
+            d = st.day(bar.trade_date)
+            d["missed"] = d.get("missed", 0) + 1
+            created = rows[0]["created_utc"]
+            ends = [od.expires for od in orders if od.expires is not None]
+            until = f", and the signal expired at {max(ends):%H:%M} UTC" if ends else ""
+            note = (" The paper account still simulates it exactly as the backtest would."
+                    if cfg.mode == "paper" else "")
+            self.notify.send(f"⏰ [{self.tag}] Missed {self.strategy.name} signal from {created:%H:%M} UTC: "
+                             f"the bot only ran at {now:%H:%M} UTC{until}. Nothing to do now.{note}")
             return
         st.day(bar.trade_date)["signals"] += len(lines)
         res.signals.extend(rows)
@@ -330,14 +345,26 @@ class Bot:
 
     # ------------------------------------------------------------------ summary / errors
 
-    def _maybe_summary(self, st, now, trade_date) -> bool:
+    def _maybe_summary(self, st, now) -> bool:
+        """Send the summary of the latest local day whose summary time has passed, once.
+
+        It always reports the trading day that ends at 17:00 New York on that local date,
+        even when the run happens after the rollover or after midnight (late runs).
+        """
         local = now.tz_convert(self.cfg.timezone)
         hh, mm = map(int, self.cfg.daily_summary_time.split(":"))
-        today = local.strftime("%Y-%m-%d")
-        if local.hour * 60 + local.minute < hh * 60 + mm or st.summary_sent_for == today:
+        target = local.normalize()
+        if local.hour * 60 + local.minute < hh * 60 + mm:
+            target -= pd.Timedelta(days=1)
+        key = target.strftime("%Y-%m-%d")
+        if st.summary_sent_for is None and key != local.strftime("%Y-%m-%d"):
+            st.summary_sent_for = key  # brand-new bot: don't summarise a day it never saw
             return False
-        self.notify.send(self.summary_text(st, trade_date))
-        st.summary_sent_for = today
+        if st.summary_sent_for == key or target.dayofweek >= 5:
+            return False
+        day = trading_day(pd.DatetimeIndex([pd.Timestamp(f"{key} 16:00", tz=NY_TZ)]))[0]
+        self.notify.send(self.summary_text(st, day))
+        st.summary_sent_for = key
         return True
 
     def summary_text(self, st, trade_date) -> str:
@@ -346,7 +373,8 @@ class Bot:
         d = st.day(day)
         lines = [f"📊 goldbot daily summary {day:%a %d %b %Y} [{self.tag}]",
                  f"Strategy: {self.strategy.name}",
-                 f"Signals sent: {d['signals']}"]
+                 f"Signals sent: {d['signals']}"
+                 + (f" (missed because the bot ran late: {d['missed']})" if d.get("missed") else "")]
         todays = [t for t in e.trades if pd.Timestamp(t.trade_date) == day]
         if self.cfg.mode == "paper":
             pnl = sum(t.pnl_usd for t in todays)

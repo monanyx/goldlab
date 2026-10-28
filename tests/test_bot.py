@@ -425,3 +425,69 @@ def test_live_mode_sends_orders_with_stops_and_kill_switch_flattens(tmp_path, ra
 def test_live_mode_refuses_without_broker(tmp_path, raw):
     with pytest.raises(ValueError):
         Bot(cfg_for(tmp_path, mode="live"), FrameFeed(raw), ConsoleNotifier(quiet=True))
+
+
+# ----------------------------------------------------------------------------- late runs and summaries
+
+
+def _first_breakout(raw, after_bar=1600):
+    from goldlab.data import clean
+    from goldlab.strategies import LondonBreakout
+    df, _ = clean(raw, spike_threshold=None)
+    sig = LondonBreakout().signals(df)
+    k = min(i for i in sig.orders if i > after_bar)
+    return df, k, sig.orders[k]
+
+
+def test_expired_signal_from_a_late_run_is_reported_as_missed(tmp_path, raw):
+    cfg = cfg_for(tmp_path, mode="paper")
+    feed = FrameFeed(raw, 15, cfg.history_bars)
+    n = ConsoleNotifier(quiet=True)
+    df, k, orders = _first_breakout(raw)
+    Bot(cfg, feed, n).run_once(df.index[k - 4] + pd.Timedelta(minutes=15))
+    late = orders[0].expires + pd.Timedelta(minutes=30)  # next run only after the window closed
+    res = Bot(cfg, feed, n).run_once(late)
+    assert not res.signals
+    assert any("Missed london_breakout signal" in m for m in n.sent)
+    assert not any("BUY STOP" in m for m in n.sent)
+    log = pd.read_csv(tmp_path / "state" / "signals.csv")
+    assert set(log["status"]) == {"missed"}
+
+
+def test_late_but_still_valid_signal_is_sent_with_late_warning(tmp_path, raw):
+    cfg = cfg_for(tmp_path)
+    feed = FrameFeed(raw, 15, cfg.history_bars)
+    n = ConsoleNotifier(quiet=True)
+    df, k, orders = _first_breakout(raw)
+    Bot(cfg, feed, n).run_once(df.index[k - 4] + pd.Timedelta(minutes=15))
+    res = Bot(cfg, feed, n).run_once(df.index[k] + pd.Timedelta(minutes=45))  # 30 min late, still valid
+    assert res.signals
+    assert any("LATE" in m and "BUY STOP" in m for m in n.sent)
+
+
+@pytest.fixture(scope="module")
+def raw_oct():
+    return random_walk_bars("2026-09-14", "2026-10-29", minutes=15, seed=9)
+
+
+def test_summary_covers_the_day_that_ended_even_after_the_rollover(tmp_path, raw_oct):
+    # 26 Oct 2026: Europe is already on winter time, New York is not. 22:52 UTC = 23:52 Vienna,
+    # which is after the 17:00 New York rollover, so the newest bar belongs to Tue 27 Oct.
+    cfg = cfg_for(tmp_path)
+    feed = FrameFeed(raw_oct, 15, cfg.history_bars)
+    n = ConsoleNotifier(quiet=True)
+    Bot(cfg, feed, n).run_once(pd.Timestamp("2026-10-26 20:00", tz="UTC"))
+    Bot(cfg, feed, n).run_once(pd.Timestamp("2026-10-26 22:52", tz="UTC"))
+    summaries = [m for m in n.sent if "daily summary" in m]
+    assert len(summaries) == 1 and "Mon 26 Oct 2026" in summaries[0]
+
+
+def test_summary_is_not_lost_when_the_next_run_is_after_midnight(tmp_path, raw_oct):
+    cfg = cfg_for(tmp_path)
+    feed = FrameFeed(raw_oct, 15, cfg.history_bars)
+    n = ConsoleNotifier(quiet=True)
+    Bot(cfg, feed, n).run_once(pd.Timestamp("2026-10-26 20:00", tz="UTC"))  # 21:00 Vienna
+    Bot(cfg, feed, n).run_once(pd.Timestamp("2026-10-27 00:30", tz="UTC"))  # 01:30 Vienna next day
+    Bot(cfg, feed, n).run_once(pd.Timestamp("2026-10-27 08:00", tz="UTC"))
+    summaries = [m for m in n.sent if "daily summary" in m]
+    assert len(summaries) == 1 and "Mon 26 Oct 2026" in summaries[0]
