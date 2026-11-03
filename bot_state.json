@@ -1,30 +1,11 @@
 {
  "engine": {
-  "equity": 9911.183089821425,
+  "equity": 9850.307597642854,
   "pending": [],
-  "pos": {
-   "trade_date": "2026-11-03T00:00:00",
-   "side": -1,
-   "entry_time": "2026-11-03T08:30:00+00:00",
-   "entry_price": 3903.117787821429,
-   "stop": 3963.76828,
-   "target": 3812.704549553572,
-   "units": 1.0,
-   "risk_usd": 60.87549217857077,
-   "tag": "short_break",
-   "reason": "Break below Asia range 3907.08-3963.77 (width 56.69 = 0.76x daily ATR); London-open breakout, valid until 11:00 UTC",
-   "exit_time": null,
-   "exit_price": null,
-   "exit_reason": "",
-   "costs_usd": 0.22499999999999998,
-   "swap_usd": 0.0,
-   "pnl_usd": 0.0,
-   "r_multiple": 0.0,
-   "equity_after": 0.0
-  },
+  "pos": null,
   "day": "2026-11-03T00:00:00",
   "day_start_equity": 9911.183089821425,
-  "day_pnl": 0.0,
+  "day_pnl": -60.87549217857077,
   "day_trades": 1,
   "trades": [
    {
@@ -106,6 +87,26 @@
     "pnl_usd": -5.648449714285562,
     "r_multiple": -0.11286633171533358,
     "equity_after": 9911.183089821425
+   },
+   {
+    "trade_date": "2026-11-03T00:00:00",
+    "side": -1,
+    "entry_time": "2026-11-03T08:30:00+00:00",
+    "entry_price": 3903.117787821429,
+    "stop": 3963.76828,
+    "target": 3812.704549553572,
+    "units": 1.0,
+    "risk_usd": 60.87549217857077,
+    "tag": "short_break",
+    "reason": "Break below Asia range 3907.08-3963.77 (width 56.69 = 0.76x daily ATR); London-open breakout, valid until 11:00 UTC",
+    "exit_time": "2026-11-03T13:30:00+00:00",
+    "exit_price": 3963.9932799999997,
+    "exit_reason": "stop",
+    "costs_usd": 0.44999999999999996,
+    "swap_usd": 0.0,
+    "pnl_usd": -60.87549217857077,
+    "r_multiple": -1.0,
+    "equity_after": 9850.307597642854
    }
   ],
   "blocked": {
@@ -115,7 +116,7 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-11-03T13:00:00+00:00"
+  "last_time": "2026-11-03T20:00:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
