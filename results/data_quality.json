@@ -1,14 +1,14 @@
 {
-  "source_rows": 60143,
-  "rows_after_clean": 49786,
+  "source_rows": 60991,
+  "rows_after_clean": 49862,
   "duplicates_removed": 0,
   "invalid_rows_removed": 0,
-  "weekend_rows_removed": 10357,
+  "weekend_rows_removed": 11129,
   "spikes_removed": 0,
   "ohlc_fixed": 0,
   "bar_minutes": 15,
-  "first_bar": "2024-09-23 00:00:00+00:00",
-  "last_bar": "2026-10-07 00:00:00+00:00",
+  "first_bar": "2024-10-21 00:00:00+00:00",
+  "last_bar": "2026-11-04 00:00:00+00:00",
   "intraday_gaps": 21,
   "largest_gaps": [
     {

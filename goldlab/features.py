@@ -19,6 +19,18 @@ def daily_atr(df: pd.DataFrame, n: int = 14) -> np.ndarray:
     return df["trade_date"].map(atr).to_numpy(float)
 
 
+def daily_trend(df: pd.DataFrame, n: int = 20) -> np.ndarray:
+    """+1 / -1 if the previous trade day's close is above / below the average of the
+    previous `n` daily closes (including that day), 0 while there is not enough history.
+
+    Known at the start of each trade date, so it is free of look-ahead.
+    """
+    closes = df.groupby("trade_date")["close"].last()
+    sma = closes.rolling(n, min_periods=n).mean()
+    sign = np.sign(closes - sma).shift(1)
+    return df["trade_date"].map(sign).fillna(0.0).to_numpy(float)
+
+
 def bar_atr(df: pd.DataFrame, n: int = 14) -> np.ndarray:
     """Rolling mean true range over the last `n` bars, inclusive of the current bar."""
     prev_close = df["close"].shift(1)

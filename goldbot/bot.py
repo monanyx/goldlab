@@ -26,7 +26,7 @@ from goldlab.sessions import NY_TZ, trading_day
 
 from . import state as statefile
 from .brokers.base import Broker, BrokerError, BrokerOrder
-from .config import BotConfig
+from .config import BotConfig, ConfigError
 from .feeds import Feed
 from .notify import Notifier
 from .strategies import resolve
@@ -64,6 +64,11 @@ class Bot:
             raise ValueError("live mode needs a broker")
         self.cfg, self.feed, self.notify, self.broker = cfg, feed, notifier, broker
         self.strategy, self.strategy_why = resolve(cfg)
+        days = self.strategy.required_history_days() if hasattr(self.strategy, "required_history_days") else 15
+        needed = int(days * 23 * 60 / cfg.timeframe_minutes)  # gold trades ~23 hours a day
+        if cfg.history_bars < needed:
+            raise ConfigError(f"strategy {self.strategy.name} needs {days} trading days of history: "
+                              f"set history_bars to at least {needed} (now {cfg.history_bars})")
         self.engine = Engine(cfg.cost_config(), cfg.risk_config())
         self.tag = {"signal": "SIGNAL", "paper": "PAPER", "live": "LIVE-DEMO"}[cfg.mode]
 
