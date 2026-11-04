@@ -116,18 +116,14 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-11-04T21:00:00+00:00"
+  "last_time": "2026-11-04T21:15:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
  "halted": false,
  "telegram_offset": 917853745,
- "summary_sent_for": "2026-11-03",
+ "summary_sent_for": "2026-11-04",
  "days": {
-  "2026-10-14": {
-   "signals": 2,
-   "rules": {}
-  },
   "2026-10-15": {
    "signals": 2,
    "rules": {}
@@ -182,6 +178,10 @@
    "signals": 0,
    "rules": {},
    "missed": 1
+  },
+  "2026-11-04": {
+   "signals": 0,
+   "rules": {}
   }
  },
  "live": {},
