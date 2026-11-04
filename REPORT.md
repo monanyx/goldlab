@@ -5,17 +5,21 @@
 - **london_breakout: INCONCLUSIVE (positive out-of-sample, but not convincing)**
 - **ny_momentum: IN-SAMPLE ONLY (does not survive out-of-sample)**
 - **vwap_fade: NO EDGE (loses even in-sample after costs)**
+- **lb_trend: INCONCLUSIVE (positive out-of-sample, but not convincing)**
+- **lb_confirm: NO EDGE (loses even in-sample after costs)**
+- **lb_early_exit: INCONCLUSIVE (positive out-of-sample, but not convincing)**
+- **lb_tight_range: INCONCLUSIVE (positive out-of-sample, but not convincing)**
 
-Bottom line: none of the three strategies shows an edge that survives costs, out-of-sample data, walk-forward re-optimisation and parameter perturbation. Do not trade them as specified.
+Bottom line: none of the 7 strategies shows an edge that survives costs, out-of-sample data, walk-forward re-optimisation and parameter perturbation. Do not trade them as specified.
 
 Verdict rules (fixed before running): an edge requires positive walk-forward OOS expectancy with t-stat >= 2.0 over >= 30 trades, positive default-parameter OOS expectancy, still positive at 2x spread+slippage, and >= 60% of the parameter grid positive.
 
 ## Data
 
-- Source: XAUUSD_M15_2024-09-23_2026-10-07_twelvedata.csv
-- Bars: 49,786 x 15-minute, 2024-09-23 00:00:00+00:00 → 2026-10-07 00:00:00+00:00 (UTC)
-- Cleaning: 0 duplicates, 0 invalid rows, 10357 weekend rows, 0 spikes removed; 0 OHLC inconsistencies fixed; 21 intraday gaps > 3 bars (not filled — see data_quality.json)
-- In-sample: 2024-09-23 → 2026-02-26; out-of-sample: 2026-02-26 → 2026-10-07 (30%)
+- Source: XAUUSD_M15_2024-10-21_2026-11-04_twelvedata.csv
+- Bars: 49,862 x 15-minute, 2024-10-21 00:00:00+00:00 → 2026-11-04 00:00:00+00:00 (UTC)
+- Cleaning: 0 duplicates, 0 invalid rows, 11129 weekend rows, 0 spikes removed; 0 OHLC inconsistencies fixed; 21 intraday gaps > 3 bars (not filled — see data_quality.json)
+- In-sample: 2024-10-21 → 2026-03-26; out-of-sample: 2026-03-26 → 2026-11-04 (30%)
 - Walk-forward: 12-month train / 3-month test, rolling
 
 ## Costs and risk (flagged assumptions)
@@ -32,21 +36,21 @@ Verdict rules (fixed before running): an edge requires positive walk-forward OOS
 
 Why:
 
-- walk-forward t-stat >= 2.0 (got 0.67)
-- >= 60% of parameter grid positive (got 42%)
+- walk-forward t-stat >= 2.0 (got 0.34)
+- >= 60% of parameter grid positive (got 59%)
 
-Default parameters: `entry_hours=3.0, buffer_atr=0.05, stop_frac=1.0, target_r=1.5, min_range_atr=0.15, max_range_atr=0.8, flat_hour=16.0`  
+Default parameters: `entry_hours=3.0, buffer_atr=0.05, stop_frac=1.0, target_r=1.5, min_range_atr=0.15, max_range_atr=0.8, flat_hour=16.0, trend_days=0, confirm_close=False`  
 In-sample optimised: `entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1`
 
 | Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full (default) | 212 | 50.0% | 1.14 | +0.038 | 0.76 | +7.6% | 10.4% | 6 |
-| IS (default) | 153 | 42.5% | 0.86 | -0.047 | -0.79 | -7.0% | 9.6% | 6 |
-| OOS (default) | 59 | 69.5% | 2.91 | +0.257 | 3.01 | +16.0% | 2.3% | 3 |
-| OOS 2x costs | 59 | 69.5% | 2.80 | +0.245 | 2.91 | +15.2% | 2.3% | 3 |
-| IS (optimised) | 126 | 48.4% | 1.00 | +0.002 | 0.02 | -0.1% | 7.9% | 5 |
-| OOS (optimised) | 45 | 66.7% | 2.66 | +0.239 | 2.74 | +11.0% | 2.2% | 3 |
-| Walk-forward OOS | 90 | 55.6% | 1.19 | +0.052 | 0.67 | +4.5% | 9.4% | 4 |
+| Full (default) | 209 | 51.2% | 1.20 | +0.055 | 1.10 | +11.4% | 10.4% | 6 |
+| IS (default) | 150 | 44.7% | 0.99 | -0.002 | -0.04 | -0.7% | 10.4% | 6 |
+| OOS (default) | 59 | 67.8% | 2.35 | +0.200 | 2.45 | +12.2% | 3.2% | 4 |
+| OOS 2x costs | 59 | 67.8% | 2.23 | +0.189 | 2.34 | +11.3% | 3.3% | 4 |
+| IS (optimised) | 122 | 50.8% | 1.15 | +0.045 | 0.72 | +5.2% | 5.9% | 4 |
+| OOS (optimised) | 46 | 63.0% | 1.88 | +0.167 | 1.82 | +7.6% | 3.4% | 3 |
+| Walk-forward OOS | 104 | 53.8% | 1.07 | +0.026 | 0.34 | +2.5% | 7.8% | 6 |
 
 ![equity](results/equity_london_breakout.png)
 
@@ -54,31 +58,31 @@ In-sample optimised: `entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1`
 
 | Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
 |---|---|---|---:|---:|---:|---:|
-| 2024-09-23 -> 2025-09-23 | 2025-09-23 -> 2025-12-22 | entry_hours=3, buffer_atr=0, stop_frac=1, target_r=1 | +0.042 | 38 | -0.144 | -5.3% |
-| 2024-12-23 -> 2025-12-23 | 2025-12-23 -> 2026-03-22 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.079 | 7 | -0.168 | -1.2% |
-| 2025-03-23 -> 2026-03-23 | 2026-03-23 -> 2026-06-22 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.073 | 20 | +0.170 | +3.4% |
-| 2025-06-23 -> 2026-06-23 | 2026-06-23 -> 2026-09-22 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=2 | +0.054 | 18 | +0.453 | +8.2% |
-| 2025-09-23 -> 2026-09-23 | 2026-09-23 -> 2026-10-07 | entry_hours=3, buffer_atr=0, stop_frac=1, target_r=2.5 | +0.126 | 7 | -0.032 | -0.2% |
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | entry_hours=3, buffer_atr=0, stop_frac=1, target_r=1 | +0.076 | 33 | -0.154 | -4.9% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.056 | 11 | -0.129 | -1.4% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.061 | 20 | +0.272 | +5.4% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | entry_hours=2, buffer_atr=0, stop_frac=0.5, target_r=1 | +0.082 | 37 | +0.161 | +5.9% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | entry_hours=3, buffer_atr=0.1, stop_frac=1, target_r=1.5 | +0.187 | 3 | -0.722 | -2.1% |
 
 ### Parameter sensitivity
 
-42% of 108 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
+59% of 108 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
 
 | Parameter | Value | Trades | Exp. (R) | PF |
 |---|---:|---:|---:|---:|
-| entry_hours | 2 | 171 | +0.052 | 1.19 |
-| entry_hours | **3** | 212 | +0.038 | 1.14 |
-| entry_hours | 4 | 234 | +0.028 | 1.10 |
-| buffer_atr | 0 | 301 | +0.054 | 1.18 |
-| buffer_atr | **0.05** | 212 | +0.038 | 1.14 |
-| buffer_atr | 0.1 | 152 | -0.029 | 0.90 |
-| stop_frac | 0.5 | 212 | -0.015 | 0.97 |
-| stop_frac | 0.75 | 212 | -0.008 | 0.98 |
-| stop_frac | **1** | 212 | +0.038 | 1.14 |
-| target_r | 1 | 212 | +0.045 | 1.17 |
-| target_r | **1.5** | 212 | +0.038 | 1.14 |
-| target_r | 2 | 212 | +0.044 | 1.16 |
-| target_r | 2.5 | 212 | +0.041 | 1.15 |
+| entry_hours | 2 | 168 | +0.067 | 1.26 |
+| entry_hours | **3** | 209 | +0.055 | 1.21 |
+| entry_hours | 4 | 231 | +0.046 | 1.17 |
+| buffer_atr | 0 | 300 | +0.058 | 1.19 |
+| buffer_atr | **0.05** | 209 | +0.055 | 1.21 |
+| buffer_atr | 0.1 | 149 | +0.001 | 1.00 |
+| stop_frac | 0.5 | 209 | +0.009 | 1.02 |
+| stop_frac | 0.75 | 209 | +0.015 | 1.04 |
+| stop_frac | **1** | 209 | +0.055 | 1.21 |
+| target_r | 1 | 209 | +0.065 | 1.26 |
+| target_r | **1.5** | 209 | +0.055 | 1.21 |
+| target_r | 2 | 209 | +0.061 | 1.23 |
+| target_r | 2.5 | 209 | +0.058 | 1.22 |
 
 ![sensitivity](results/sensitivity_london_breakout.png)
 
@@ -86,9 +90,9 @@ In-sample optimised: `entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1`
 
 | Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.0% | -3.6% | -2.3% | +4.7% | -1.3% |
-| 2025 | +2.1% | -2.1% | -2.4% | +0.6% | +4.4% | -1.2% | +1.4% | +0.7% | -2.1% | -0.9% | -1.7% | -2.0% | -3.5% |
-| 2026 | -1.4% | -1.0% | +1.7% | +1.5% | +2.5% | +2.2% | +3.1% | +1.1% | +3.4% | -0.5% | n/a | n/a | +13.0% |
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +1.4% | -2.3% | +4.7% | +3.7% |
+| 2025 | +2.1% | -2.1% | -2.4% | +0.6% | +4.3% | -1.2% | +1.4% | +0.7% | -2.1% | -0.9% | -1.8% | -1.9% | -3.5% |
+| 2026 | -1.4% | -1.0% | +1.7% | +1.4% | +2.4% | +2.2% | +3.1% | +1.1% | +3.4% | -1.1% | -1.0% | n/a | +11.3% |
 
 ## ny_momentum
 
@@ -96,24 +100,23 @@ In-sample optimised: `entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1`
 
 Why:
 
-- walk-forward expectancy > 0 (got -0.309R)
-- walk-forward t-stat >= 2.0 (got -2.27)
-- default params OOS expectancy > 0 (got -0.327R)
-- OOS still positive at 2x costs (got -0.338R)
-- >= 60% of parameter grid positive (got 24%)
+- walk-forward t-stat >= 2.0 (got 0.21)
+- default params OOS expectancy > 0 (got -0.330R)
+- OOS still positive at 2x costs (got -0.342R)
+- >= 60% of parameter grid positive (got 23%)
 
 Default parameters: `open_hour=8.5, obs_minutes=30, thresh_atr=0.15, stop_atr=0.25, target_r=2.0, flat_hour=16.0`  
 In-sample optimised: `obs_minutes=45, thresh_atr=0.2, stop_atr=0.25, target_r=1`
 
 | Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full (default) | 116 | 36.2% | 0.86 | -0.083 | -0.74 | -9.6% | 18.2% | 8 |
-| IS (default) | 87 | 39.1% | 0.99 | -0.001 | -0.01 | -0.7% | 10.7% | 8 |
-| OOS (default) | 29 | 27.6% | 0.49 | -0.327 | -1.68 | -9.0% | 10.4% | 6 |
-| OOS 2x costs | 29 | 27.6% | 0.47 | -0.338 | -1.76 | -9.4% | 10.6% | 6 |
-| IS (optimised) | 79 | 60.8% | 1.45 | +0.171 | 1.67 | +14.0% | 3.7% | 3 |
-| OOS (optimised) | 26 | 26.9% | 0.42 | -0.373 | -2.18 | -9.2% | 10.8% | 10 |
-| Walk-forward OOS | 72 | 23.6% | 0.52 | -0.309 | -2.27 | -20.2% | 20.2% | 15 |
+| Full (default) | 113 | 36.3% | 0.85 | -0.087 | -0.78 | -9.9% | 20.7% | 9 |
+| IS (default) | 81 | 39.5% | 1.00 | +0.009 | 0.06 | +0.2% | 11.8% | 8 |
+| OOS (default) | 32 | 28.1% | 0.48 | -0.330 | -1.85 | -10.0% | 13.1% | 9 |
+| OOS 2x costs | 32 | 28.1% | 0.46 | -0.342 | -1.95 | -10.3% | 13.3% | 9 |
+| IS (optimised) | 77 | 61.0% | 1.47 | +0.179 | 1.73 | +14.3% | 5.2% | 3 |
+| OOS (optimised) | 25 | 28.0% | 0.43 | -0.350 | -1.99 | -8.3% | 11.7% | 10 |
+| Walk-forward OOS | 65 | 46.2% | 1.06 | +0.026 | 0.21 | +1.5% | 7.8% | 6 |
 
 ![equity](results/equity_ny_momentum.png)
 
@@ -121,32 +124,32 @@ In-sample optimised: `obs_minutes=45, thresh_atr=0.2, stop_atr=0.25, target_r=1`
 
 | Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
 |---|---|---|---:|---:|---:|---:|
-| 2024-09-23 -> 2025-09-23 | 2025-09-23 -> 2025-12-22 | obs_minutes=45, thresh_atr=0.1, stop_atr=0.15, target_r=3 | +0.340 | 34 | -0.474 | -15.0% |
-| 2024-12-23 -> 2025-12-23 | 2025-12-23 -> 2026-03-22 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.25, target_r=1 | +0.189 | 12 | -0.022 | -0.3% |
-| 2025-03-23 -> 2026-03-23 | 2026-03-23 -> 2026-06-22 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.35, target_r=3 | +0.260 | 7 | +0.377 | +2.5% |
-| 2025-06-23 -> 2026-06-23 | 2026-06-23 -> 2026-09-22 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.35, target_r=3 | +0.276 | 15 | -0.431 | -6.2% |
-| 2025-09-23 -> 2026-09-23 | 2026-09-23 -> 2026-10-07 | obs_minutes=30, thresh_atr=0.1, stop_atr=0.15, target_r=1 | -0.001 | 4 | -0.516 | -2.1% |
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.25, target_r=1 | +0.202 | 14 | +0.397 | +5.6% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | obs_minutes=60, thresh_atr=0.1, stop_atr=0.35, target_r=1 | +0.125 | 27 | -0.113 | -2.9% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.35, target_r=3 | +0.202 | 11 | +0.184 | +1.9% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.35, target_r=3 | +0.267 | 11 | -0.528 | -5.6% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | obs_minutes=45, thresh_atr=0.2, stop_atr=0.35, target_r=3 | +0.038 | 2 | +1.481 | +2.9% |
 
 ### Parameter sensitivity
 
-24% of 144 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
+23% of 144 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
 
 | Parameter | Value | Trades | Exp. (R) | PF |
 |---|---:|---:|---:|---:|
-| obs_minutes | 15 | 69 | -0.264 | 0.61 |
-| obs_minutes | **30** | 116 | -0.083 | 0.86 |
-| obs_minutes | 45 | 159 | +0.008 | 1.01 |
-| obs_minutes | 60 | 173 | +0.003 | 1.01 |
-| thresh_atr | 0.1 | 205 | -0.052 | 0.90 |
-| thresh_atr | **0.15** | 116 | -0.083 | 0.86 |
-| thresh_atr | 0.2 | 62 | -0.108 | 0.82 |
-| stop_atr | 0.15 | 116 | -0.161 | 0.77 |
-| stop_atr | **0.25** | 116 | -0.083 | 0.86 |
-| stop_atr | 0.35 | 116 | -0.069 | 0.85 |
-| target_r | 1 | 116 | -0.066 | 0.86 |
-| target_r | 1.5 | 116 | -0.096 | 0.83 |
-| target_r | **2** | 116 | -0.083 | 0.86 |
-| target_r | 3 | 116 | -0.069 | 0.88 |
+| obs_minutes | 15 | 70 | -0.281 | 0.58 |
+| obs_minutes | **30** | 113 | -0.087 | 0.85 |
+| obs_minutes | 45 | 153 | +0.009 | 1.02 |
+| obs_minutes | 60 | 169 | -0.023 | 0.95 |
+| thresh_atr | 0.1 | 203 | -0.044 | 0.92 |
+| thresh_atr | **0.15** | 113 | -0.087 | 0.85 |
+| thresh_atr | 0.2 | 60 | -0.046 | 0.92 |
+| stop_atr | 0.15 | 113 | -0.137 | 0.80 |
+| stop_atr | **0.25** | 113 | -0.087 | 0.85 |
+| stop_atr | 0.35 | 113 | -0.075 | 0.84 |
+| target_r | 1 | 113 | -0.041 | 0.91 |
+| target_r | 1.5 | 113 | -0.106 | 0.81 |
+| target_r | **2** | 113 | -0.087 | 0.85 |
+| target_r | 3 | 113 | -0.070 | 0.88 |
 
 ![sensitivity](results/sensitivity_ny_momentum.png)
 
@@ -154,9 +157,9 @@ In-sample optimised: `obs_minutes=45, thresh_atr=0.2, stop_atr=0.25, target_r=1`
 
 | Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.0% | -2.8% | +0.7% | +3.3% | +1.2% |
-| 2025 | -0.0% | +2.0% | -1.0% | +1.3% | +2.6% | -1.1% | +1.2% | -0.0% | +1.3% | -1.2% | -3.5% | -1.2% | +0.3% |
-| 2026 | -0.1% | -2.0% | -2.0% | +0.3% | +1.3% | +0.4% | -3.3% | -0.1% | -4.8% | -1.0% | n/a | n/a | -10.9% |
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.0% | +0.7% | +3.4% | +4.1% |
+| 2025 | -0.0% | +2.0% | -1.0% | +1.3% | +2.6% | -1.1% | +1.2% | -0.0% | +1.3% | -1.2% | -3.5% | -1.2% | +0.2% |
+| 2026 | -0.0% | -2.0% | -2.0% | +0.3% | +1.3% | +0.3% | -3.3% | -0.1% | -4.8% | -3.2% | -0.8% | n/a | -13.6% |
 
 ## vwap_fade
 
@@ -164,9 +167,10 @@ In-sample optimised: `obs_minutes=45, thresh_atr=0.2, stop_atr=0.25, target_r=1`
 
 Why:
 
-- walk-forward t-stat >= 2.0 (got 0.68)
-- default params OOS expectancy > 0 (got -0.083R)
-- OOS still positive at 2x costs (got -0.098R)
+- walk-forward expectancy > 0 (got -0.027R)
+- walk-forward t-stat >= 2.0 (got -0.16)
+- default params OOS expectancy > 0 (got -0.048R)
+- OOS still positive at 2x costs (got -0.065R)
 - >= 60% of parameter grid positive (got 0%)
 
 Default parameters: `dev_atr=0.35, stop_atr=0.25, start_hour=10.0, end_hour=14.0, flat_hour=16.0, min_reward_risk=0.8`  
@@ -174,13 +178,13 @@ In-sample optimised: `dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5`
 
 | Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Full (default) | 252 | 39.7% | 0.77 | -0.105 | -1.56 | -24.1% | 31.4% | 11 |
-| IS (default) | 187 | 37.4% | 0.75 | -0.112 | -1.40 | -19.8% | 31.4% | 11 |
-| OOS (default) | 65 | 46.2% | 0.82 | -0.083 | -0.68 | -5.4% | 9.3% | 4 |
-| OOS 2x costs | 65 | 46.2% | 0.79 | -0.098 | -0.82 | -6.3% | 9.9% | 4 |
-| IS (optimised) | 87 | 28.7% | 0.88 | -0.052 | -0.26 | -6.0% | 22.6% | 19 |
-| OOS (optimised) | 26 | 38.5% | 1.20 | +0.135 | 0.42 | +3.3% | 6.0% | 4 |
-| Walk-forward OOS | 56 | 37.5% | 1.28 | +0.199 | 0.68 | +10.2% | 8.2% | 6 |
+| Full (default) | 256 | 39.5% | 0.78 | -0.097 | -1.44 | -23.1% | 29.3% | 11 |
+| IS (default) | 191 | 37.2% | 0.76 | -0.113 | -1.41 | -20.4% | 29.3% | 11 |
+| OOS (default) | 65 | 46.2% | 0.88 | -0.048 | -0.40 | -3.3% | 9.1% | 7 |
+| OOS 2x costs | 65 | 46.2% | 0.84 | -0.065 | -0.56 | -4.5% | 9.8% | 7 |
+| IS (optimised) | 94 | 28.7% | 0.95 | -0.011 | -0.06 | -2.9% | 22.6% | 19 |
+| OOS (optimised) | 26 | 30.8% | 0.69 | -0.208 | -0.80 | -5.4% | 10.8% | 6 |
+| Walk-forward OOS | 65 | 41.5% | 0.93 | -0.027 | -0.16 | -2.4% | 11.7% | 6 |
 
 ![equity](results/equity_vwap_fade.png)
 
@@ -188,11 +192,11 @@ In-sample optimised: `dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5`
 
 | Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
 |---|---|---|---:|---:|---:|---:|
-| 2024-09-23 -> 2025-09-23 | 2025-09-23 -> 2025-12-22 | dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5 | -0.232 | 22 | -0.102 | -2.4% |
-| 2024-12-23 -> 2025-12-23 | 2025-12-23 -> 2026-03-22 | dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5 | -0.149 | 16 | +0.912 | +14.5% |
-| 2025-03-23 -> 2026-03-23 | 2026-03-23 -> 2026-06-22 | dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5 | +0.096 | 13 | -0.086 | -1.2% |
-| 2025-06-23 -> 2026-06-23 | 2026-06-23 -> 2026-09-22 | dev_atr=0.55, stop_atr=0.25, min_reward_risk=0.5 | -0.000 | 5 | -0.024 | -0.2% |
-| 2025-09-23 -> 2026-09-23 | 2026-09-23 -> 2026-10-07 | dev_atr=0.55, stop_atr=0.25, min_reward_risk=0.5 | +0.164 | 0 | n/a | +0.0% |
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | dev_atr=0.45, stop_atr=0.35, min_reward_risk=0.5 | -0.170 | 18 | +0.035 | +0.6% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | dev_atr=0.45, stop_atr=0.25, min_reward_risk=0.5 | -0.098 | 23 | +0.168 | +3.3% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | dev_atr=0.55, stop_atr=0.25, min_reward_risk=0.5 | +0.070 | 10 | -0.021 | -0.3% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5 | +0.045 | 8 | -0.408 | -3.2% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | dev_atr=0.55, stop_atr=0.25, min_reward_risk=0.5 | +0.254 | 6 | -0.466 | -2.8% |
 
 ### Parameter sensitivity
 
@@ -200,18 +204,18 @@ In-sample optimised: `dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5`
 
 | Parameter | Value | Trades | Exp. (R) | PF |
 |---|---:|---:|---:|---:|
-| dev_atr | 0.25 | 414 | -0.105 | 0.77 |
-| dev_atr | 0.3 | 322 | -0.099 | 0.79 |
-| dev_atr | **0.35** | 252 | -0.105 | 0.79 |
-| dev_atr | 0.45 | 151 | -0.066 | 0.86 |
-| dev_atr | 0.55 | 100 | -0.054 | 0.90 |
-| stop_atr | 0.15 | 293 | -0.100 | 0.84 |
-| stop_atr | 0.2 | 269 | -0.119 | 0.78 |
-| stop_atr | **0.25** | 252 | -0.105 | 0.79 |
-| stop_atr | 0.35 | 227 | -0.069 | 0.82 |
-| min_reward_risk | 0.5 | 252 | -0.105 | 0.79 |
-| min_reward_risk | **0.8** | 252 | -0.105 | 0.79 |
-| min_reward_risk | 1.2 | 252 | -0.105 | 0.79 |
+| dev_atr | 0.25 | 412 | -0.105 | 0.78 |
+| dev_atr | 0.3 | 323 | -0.089 | 0.81 |
+| dev_atr | **0.35** | 256 | -0.097 | 0.80 |
+| dev_atr | 0.45 | 157 | -0.100 | 0.80 |
+| dev_atr | 0.55 | 106 | -0.094 | 0.82 |
+| stop_atr | 0.15 | 297 | -0.083 | 0.87 |
+| stop_atr | 0.2 | 273 | -0.109 | 0.80 |
+| stop_atr | **0.25** | 256 | -0.097 | 0.80 |
+| stop_atr | 0.35 | 229 | -0.065 | 0.83 |
+| min_reward_risk | 0.5 | 256 | -0.097 | 0.80 |
+| min_reward_risk | **0.8** | 256 | -0.097 | 0.80 |
+| min_reward_risk | 1.2 | 256 | -0.097 | 0.80 |
 
 ![sensitivity](results/sensitivity_vwap_fade.png)
 
@@ -219,9 +223,265 @@ In-sample optimised: `dev_atr=0.55, stop_atr=0.15, min_reward_risk=0.5`
 
 | Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.0% | -1.1% | -8.8% | -1.0% | -10.6% |
-| 2025 | -0.8% | +5.2% | +2.0% | -3.0% | -3.3% | +0.1% | -2.4% | -5.8% | -5.8% | -7.7% | +0.8% | +7.9% | -13.0% |
-| 2026 | +3.4% | -0.2% | -2.7% | -0.1% | +2.7% | -5.4% | +2.6% | -2.6% | -0.1% | +0.5% | n/a | n/a | -2.3% |
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.9% | -8.8% | -1.0% | -8.9% |
+| 2025 | -0.8% | +5.2% | +2.0% | -3.0% | -3.2% | +0.1% | -2.4% | -5.8% | -5.8% | -7.8% | +0.8% | +7.8% | -13.2% |
+| 2026 | +3.5% | -0.2% | -2.8% | -0.1% | +2.8% | -5.5% | +2.5% | -2.6% | -0.1% | -1.0% | +1.1% | n/a | -2.7% |
+
+## lb_trend
+
+**Verdict: INCONCLUSIVE (positive out-of-sample, but not convincing)**
+
+Why:
+
+- walk-forward t-stat >= 2.0 (got 0.66)
+
+Default parameters: `entry_hours=3.0, buffer_atr=0.05, stop_frac=1.0, target_r=1.5, min_range_atr=0.15, max_range_atr=0.8, flat_hour=16.0, trend_days=20, confirm_close=False`  
+In-sample optimised: `entry_hours=3, buffer_atr=0, stop_frac=1, target_r=2.5`
+
+| Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Full (default) | 103 | 52.4% | 1.33 | +0.080 | 1.15 | +8.2% | 5.3% | 5 |
+| IS (default) | 70 | 44.3% | 1.05 | +0.017 | 0.20 | +1.1% | 5.3% | 5 |
+| OOS (default) | 33 | 69.7% | 2.31 | +0.211 | 1.84 | +7.0% | 2.3% | 3 |
+| OOS 2x costs | 33 | 69.7% | 2.23 | +0.200 | 1.76 | +6.6% | 2.3% | 3 |
+| IS (optimised) | 104 | 51.0% | 1.29 | +0.095 | 1.06 | +9.8% | 7.5% | 6 |
+| OOS (optimised) | 47 | 59.6% | 1.40 | +0.124 | 1.01 | +5.7% | 5.1% | 6 |
+| Walk-forward OOS | 51 | 54.9% | 1.24 | +0.073 | 0.66 | +3.5% | 4.2% | 5 |
+
+![equity](results/equity_lb_trend.png)
+
+### Walk-forward folds
+
+| Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
+|---|---|---|---:|---:|---:|---:|
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=2.5 | +0.096 | 5 | -0.251 | -1.3% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=2 | +0.097 | 4 | +0.075 | +0.3% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | entry_hours=3, buffer_atr=0, stop_frac=1, target_r=2.5 | +0.133 | 19 | +0.128 | +2.4% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | entry_hours=3, buffer_atr=0, stop_frac=1, target_r=2.5 | +0.170 | 20 | +0.217 | +4.3% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1.5 | +0.277 | 3 | -0.704 | -2.1% |
+
+### Parameter sensitivity
+
+75% of 108 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
+
+| Parameter | Value | Trades | Exp. (R) | PF |
+|---|---:|---:|---:|---:|
+| entry_hours | 2 | 81 | +0.120 | 1.50 |
+| entry_hours | **3** | 103 | +0.080 | 1.33 |
+| entry_hours | 4 | 115 | +0.067 | 1.26 |
+| buffer_atr | 0 | 151 | +0.086 | 1.28 |
+| buffer_atr | **0.05** | 103 | +0.080 | 1.33 |
+| buffer_atr | 0.1 | 75 | +0.043 | 1.18 |
+| stop_frac | 0.5 | 103 | -0.019 | 0.96 |
+| stop_frac | 0.75 | 103 | +0.051 | 1.15 |
+| stop_frac | **1** | 103 | +0.080 | 1.33 |
+| target_r | 1 | 103 | +0.066 | 1.27 |
+| target_r | **1.5** | 103 | +0.080 | 1.33 |
+| target_r | 2 | 103 | +0.083 | 1.34 |
+| target_r | 2.5 | 103 | +0.069 | 1.28 |
+
+![sensitivity](results/sensitivity_lb_trend.png)
+
+### Monthly returns (default parameters, full period)
+
+| Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.0% | -1.0% | +3.0% | +2.0% |
+| 2025 | +0.8% | -1.7% | -2.2% | +0.6% | +2.1% | -1.5% | +1.4% | +0.7% | +0.3% | -1.2% | -0.8% | +0.5% | -1.1% |
+| 2026 | +0.0% | +0.0% | +0.2% | +2.0% | +1.2% | +1.5% | +0.5% | +0.8% | +2.3% | -0.4% | -0.9% | n/a | +7.2% |
+
+## lb_confirm
+
+**Verdict: NO EDGE (loses even in-sample after costs)**
+
+Why:
+
+- walk-forward expectancy > 0 (got -0.120R)
+- walk-forward t-stat >= 2.0 (got -1.06)
+- >= 60% of parameter grid positive (got 17%)
+
+Default parameters: `entry_hours=3.0, buffer_atr=0.05, stop_frac=1.0, target_r=1.5, min_range_atr=0.15, max_range_atr=0.8, flat_hour=16.0, trend_days=0, confirm_close=True`  
+In-sample optimised: `entry_hours=3, buffer_atr=0.1, stop_frac=1, target_r=2.5`
+
+| Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Full (default) | 161 | 48.4% | 0.95 | -0.011 | -0.19 | -2.3% | 15.0% | 8 |
+| IS (default) | 116 | 44.0% | 0.76 | -0.082 | -1.18 | -9.4% | 15.0% | 8 |
+| OOS (default) | 45 | 60.0% | 1.94 | +0.172 | 1.78 | +7.7% | 3.0% | 3 |
+| OOS 2x costs | 45 | 60.0% | 1.87 | +0.160 | 1.68 | +7.3% | 3.0% | 3 |
+| IS (optimised) | 92 | 46.7% | 0.97 | -0.005 | -0.06 | -0.7% | 9.3% | 6 |
+| OOS (optimised) | 30 | 56.7% | 1.36 | +0.062 | 0.63 | +1.9% | 2.5% | 4 |
+| Walk-forward OOS | 66 | 43.9% | 0.72 | -0.120 | -1.06 | -7.9% | 18.1% | 10 |
+
+![equity](results/equity_lb_confirm.png)
+
+### Walk-forward folds
+
+| Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
+|---|---|---|---:|---:|---:|---:|
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | entry_hours=3, buffer_atr=0, stop_frac=0.5, target_r=1 | +0.027 | 26 | -0.542 | -13.1% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | entry_hours=2, buffer_atr=0.05, stop_frac=0.5, target_r=1.5 | -0.042 | 5 | -0.827 | -4.0% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | entry_hours=2, buffer_atr=0.05, stop_frac=0.5, target_r=1.5 | +0.024 | 16 | +0.470 | +7.6% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=2 | +0.039 | 16 | +0.305 | +4.8% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | entry_hours=4, buffer_atr=0.05, stop_frac=1, target_r=2 | +0.183 | 3 | -0.710 | -2.1% |
+
+### Parameter sensitivity
+
+17% of 108 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
+
+| Parameter | Value | Trades | Exp. (R) | PF |
+|---|---:|---:|---:|---:|
+| entry_hours | 2 | 131 | +0.011 | 1.04 |
+| entry_hours | **3** | 161 | -0.011 | 0.96 |
+| entry_hours | 4 | 187 | +0.009 | 1.03 |
+| buffer_atr | 0 | 232 | -0.024 | 0.93 |
+| buffer_atr | **0.05** | 161 | -0.011 | 0.96 |
+| buffer_atr | 0.1 | 122 | +0.003 | 1.01 |
+| stop_frac | 0.5 | 161 | -0.031 | 0.94 |
+| stop_frac | 0.75 | 161 | -0.052 | 0.87 |
+| stop_frac | **1** | 161 | -0.011 | 0.96 |
+| target_r | 1 | 161 | -0.020 | 0.93 |
+| target_r | **1.5** | 161 | -0.011 | 0.96 |
+| target_r | 2 | 161 | +0.011 | 1.04 |
+| target_r | 2.5 | 161 | +0.007 | 1.02 |
+
+![sensitivity](results/sensitivity_lb_confirm.png)
+
+### Monthly returns (default parameters, full period)
+
+| Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +1.4% | -2.1% | +3.6% | +2.9% |
+| 2025 | -0.2% | -2.3% | -2.7% | -2.9% | +1.3% | -2.5% | +1.0% | +1.0% | -3.0% | -0.8% | -1.6% | -0.0% | -12.1% |
+| 2026 | -1.6% | +0.0% | +1.8% | +0.5% | +1.1% | +1.7% | +3.5% | +0.6% | +2.1% | -0.9% | -1.0% | n/a | +8.0% |
+
+## lb_early_exit
+
+**Verdict: INCONCLUSIVE (positive out-of-sample, but not convincing)**
+
+Why:
+
+- walk-forward t-stat >= 2.0 (got 0.38)
+- >= 60% of parameter grid positive (got 31%)
+
+Default parameters: `entry_hours=3.0, buffer_atr=0.05, stop_frac=1.0, target_r=1.5, min_range_atr=0.15, max_range_atr=0.8, flat_hour=13.0, trend_days=0, confirm_close=False`  
+In-sample optimised: `entry_hours=2, buffer_atr=0, stop_frac=1, target_r=1`
+
+| Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Full (default) | 209 | 48.3% | 1.00 | +0.002 | 0.07 | +0.1% | 6.6% | 9 |
+| IS (default) | 150 | 48.7% | 0.93 | -0.010 | -0.27 | -1.8% | 6.6% | 9 |
+| OOS (default) | 59 | 47.5% | 1.25 | +0.034 | 0.67 | +2.0% | 2.6% | 6 |
+| OOS 2x costs | 59 | 47.5% | 1.18 | +0.024 | 0.48 | +1.4% | 2.7% | 6 |
+| IS (optimised) | 189 | 48.7% | 1.10 | +0.021 | 0.56 | +3.8% | 5.1% | 7 |
+| OOS (optimised) | 82 | 51.2% | 1.22 | +0.036 | 0.70 | +2.9% | 3.2% | 5 |
+| Walk-forward OOS | 104 | 48.1% | 1.10 | +0.018 | 0.38 | +1.8% | 3.6% | 7 |
+
+![equity](results/equity_lb_early_exit.png)
+
+### Walk-forward folds
+
+| Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
+|---|---|---|---:|---:|---:|---:|
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | entry_hours=3, buffer_atr=0, stop_frac=1, target_r=1 | +0.033 | 33 | -0.001 | -0.0% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.060 | 11 | -0.188 | -1.9% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.088 | 20 | +0.175 | +3.4% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | entry_hours=2, buffer_atr=0, stop_frac=1, target_r=1.5 | +0.068 | 37 | +0.058 | +2.1% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | entry_hours=2, buffer_atr=0.1, stop_frac=0.75, target_r=1 | +0.145 | 3 | -0.581 | -1.7% |
+
+### Parameter sensitivity
+
+31% of 108 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
+
+| Parameter | Value | Trades | Exp. (R) | PF |
+|---|---:|---:|---:|---:|
+| entry_hours | 2 | 168 | +0.007 | 1.04 |
+| entry_hours | **3** | 209 | +0.002 | 1.01 |
+| entry_hours | 4 | 231 | +0.001 | 1.00 |
+| buffer_atr | 0 | 300 | +0.008 | 1.05 |
+| buffer_atr | **0.05** | 209 | +0.002 | 1.01 |
+| buffer_atr | 0.1 | 149 | -0.031 | 0.82 |
+| stop_frac | 0.5 | 209 | -0.013 | 0.96 |
+| stop_frac | 0.75 | 209 | +0.002 | 1.01 |
+| stop_frac | **1** | 209 | +0.002 | 1.01 |
+| target_r | 1 | 209 | +0.017 | 1.11 |
+| target_r | **1.5** | 209 | +0.002 | 1.01 |
+| target_r | 2 | 209 | +0.006 | 1.03 |
+| target_r | 2.5 | 209 | -0.000 | 1.00 |
+
+![sensitivity](results/sensitivity_lb_early_exit.png)
+
+### Monthly returns (default parameters, full period)
+
+| Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +0.2% | -1.5% | -1.1% | -2.4% |
+| 2025 | -0.5% | -2.0% | -0.2% | -0.3% | +3.1% | -2.8% | +1.0% | +0.1% | +2.1% | -0.1% | -0.6% | +0.7% | +0.3% |
+| 2026 | -0.4% | -0.2% | +0.9% | -0.5% | +2.0% | -0.1% | +1.0% | +0.3% | +0.9% | -1.2% | -0.5% | n/a | +2.2% |
+
+## lb_tight_range
+
+**Verdict: INCONCLUSIVE (positive out-of-sample, but not convincing)**
+
+Why:
+
+- walk-forward t-stat >= 2.0 (got 0.17)
+- >= 60% of parameter grid positive (got 56%)
+
+Default parameters: `entry_hours=3.0, buffer_atr=0.05, stop_frac=1.0, target_r=1.5, min_range_atr=0.15, max_range_atr=0.5, flat_hour=16.0, trend_days=0, confirm_close=False`  
+In-sample optimised: `entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1`
+
+| Period | Trades | Win rate | PF | Exp. (R) | t-stat | Return | Max DD | Longest losing streak |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Full (default) | 154 | 51.3% | 1.23 | +0.068 | 1.09 | +10.2% | 9.2% | 6 |
+| IS (default) | 111 | 43.2% | 0.98 | -0.005 | -0.06 | -0.9% | 9.2% | 6 |
+| OOS (default) | 43 | 72.1% | 2.64 | +0.258 | 2.46 | +11.3% | 2.4% | 2 |
+| OOS 2x costs | 43 | 72.1% | 2.54 | +0.245 | 2.36 | +10.7% | 2.4% | 2 |
+| IS (optimised) | 90 | 48.9% | 1.14 | +0.047 | 0.60 | +4.1% | 5.5% | 4 |
+| OOS (optimised) | 35 | 65.7% | 2.07 | +0.205 | 1.84 | +7.2% | 2.4% | 3 |
+| Walk-forward OOS | 72 | 51.4% | 1.04 | +0.016 | 0.17 | +1.0% | 8.1% | 6 |
+
+![equity](results/equity_lb_tight_range.png)
+
+### Walk-forward folds
+
+| Train | Test | Chosen params | Train exp. (R) | Test trades | Test exp. (R) | Test return |
+|---|---|---|---:|---:|---:|---:|
+| 2024-10-21 -> 2025-10-21 | 2025-10-21 -> 2026-01-20 | entry_hours=4, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.090 | 20 | -0.218 | -4.2% |
+| 2025-01-21 -> 2026-01-21 | 2026-01-21 -> 2026-04-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.073 | 10 | -0.241 | -2.3% |
+| 2025-04-21 -> 2026-04-21 | 2026-04-21 -> 2026-07-20 | entry_hours=2, buffer_atr=0.05, stop_frac=1, target_r=1 | +0.052 | 15 | +0.298 | +4.4% |
+| 2025-07-21 -> 2026-07-21 | 2026-07-21 -> 2026-10-20 | entry_hours=2, buffer_atr=0, stop_frac=0.5, target_r=1 | +0.131 | 26 | +0.172 | +4.5% |
+| 2025-10-21 -> 2026-10-21 | 2026-10-21 -> 2026-11-04 | entry_hours=3, buffer_atr=0.1, stop_frac=1, target_r=1.5 | +0.203 | 1 | -1.000 | -1.0% |
+
+### Parameter sensitivity
+
+56% of 108 parameter combinations have positive full-period expectancy (combos with >= 20 trades). One parameter at a time, others at default (default in bold):
+
+| Parameter | Value | Trades | Exp. (R) | PF |
+|---|---:|---:|---:|---:|
+| entry_hours | 2 | 125 | +0.080 | 1.28 |
+| entry_hours | **3** | 154 | +0.068 | 1.24 |
+| entry_hours | 4 | 169 | +0.061 | 1.21 |
+| buffer_atr | 0 | 222 | +0.048 | 1.14 |
+| buffer_atr | **0.05** | 154 | +0.068 | 1.24 |
+| buffer_atr | 0.1 | 108 | +0.015 | 1.05 |
+| stop_frac | 0.5 | 154 | +0.030 | 1.06 |
+| stop_frac | 0.75 | 154 | +0.022 | 1.05 |
+| stop_frac | **1** | 154 | +0.068 | 1.24 |
+| target_r | 1 | 154 | +0.076 | 1.28 |
+| target_r | **1.5** | 154 | +0.068 | 1.24 |
+| target_r | 2 | 154 | +0.070 | 1.24 |
+| target_r | 2.5 | 154 | +0.061 | 1.21 |
+
+![sensitivity](results/sensitivity_lb_tight_range.png)
+
+### Monthly returns (default parameters, full period)
+
+| Year | Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Year |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 2024 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | +1.4% | -2.7% | +4.1% | +2.7% |
+| 2025 | +2.6% | -2.7% | -2.7% | +1.0% | +4.3% | -2.0% | +1.4% | +0.1% | -0.5% | -0.6% | -1.8% | -1.6% | -2.6% |
+| 2026 | -0.7% | -1.0% | +0.7% | +1.0% | +2.6% | +1.7% | +2.8% | +0.3% | +3.6% | -1.2% | +0.0% | n/a | +10.1% |
 
 ## Caveats
 

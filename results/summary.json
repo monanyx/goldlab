@@ -3,502 +3,1178 @@
     "verdict": "INCONCLUSIVE (positive out-of-sample, but not convincing)",
     "stats": {
       "Full (default)": {
-        "trades": 212,
-        "win_rate": 0.5,
-        "profit_factor": 1.1359816124227269,
-        "expectancy_r": 0.03776726480045598,
-        "r_t_stat": 0.7599467042248206,
-        "total_return": 0.0763086988819599,
-        "max_drawdown": 0.10385494579055335,
+        "trades": 209,
+        "win_rate": 0.5119617224880383,
+        "profit_factor": 1.2026628826632533,
+        "expectancy_r": 0.054912919006645314,
+        "r_t_stat": 1.1035859908017571,
+        "total_return": 0.1135045003813473,
+        "max_drawdown": 0.10444216662023999,
         "longest_losing_streak": 6,
-        "avg_win_r": 0.6199515642215534,
-        "avg_loss_r": -0.5444170346206413,
-        "trades_per_month": 8.673763440860215
+        "avg_win_r": 0.6174033760382399,
+        "avg_loss_r": -0.5351505996441451,
+        "trades_per_month": 8.551021505376344
       },
       "IS (default)": {
-        "trades": 153,
-        "win_rate": 0.42483660130718953,
-        "profit_factor": 0.855553799419019,
-        "expectancy_r": -0.046649520069458376,
-        "r_t_stat": -0.7870949943849148,
-        "total_return": -0.06994646456106779,
-        "max_drawdown": 0.09631059925099177,
+        "trades": 150,
+        "win_rate": 0.44666666666666666,
+        "profit_factor": 0.9858339132213045,
+        "expectancy_r": -0.0023368513285168704,
+        "r_t_stat": -0.038337354831328704,
+        "total_return": -0.006651153343286587,
+        "max_drawdown": 0.10444216662023999,
         "longest_losing_streak": 6,
-        "avg_win_r": 0.6551071615794528,
-        "avg_loss_r": -0.5649925235601315,
-        "trades_per_month": 8.939193857965453
+        "avg_win_r": 0.6808093988456606,
+        "avg_loss_r": -0.5537922580956239,
+        "trades_per_month": 8.763915547024952
       },
       "OOS (default)": {
         "trades": 59,
-        "win_rate": 0.6949152542372882,
-        "profit_factor": 2.911598915539587,
-        "expectancy_r": 0.25667858827667456,
-        "r_t_stat": 3.0108088930526935,
-        "total_return": 0.15964427012177707,
-        "max_drawdown": 0.022609585277204098,
-        "longest_losing_streak": 3,
-        "avg_win_r": 0.5642170806053708,
-        "avg_loss_r": -0.443825755360911,
+        "win_rate": 0.6779661016949152,
+        "profit_factor": 2.346578330361379,
+        "expectancy_r": 0.20046318257061693,
+        "r_t_stat": 2.4531845211361003,
+        "total_return": 0.12241450752606275,
+        "max_drawdown": 0.032234565101962036,
+        "longest_losing_streak": 4,
+        "avg_win_r": 0.5111982878358102,
+        "avg_loss_r": -0.45371598640873745,
         "trades_per_month": 8.08990990990991
       },
       "OOS 2x costs": {
         "trades": 59,
-        "win_rate": 0.6949152542372882,
-        "profit_factor": 2.803561669914734,
-        "expectancy_r": 0.24516972493662306,
-        "r_t_stat": 2.9051810912231697,
-        "total_return": 0.1516241512780383,
-        "max_drawdown": 0.02274459167042535,
-        "longest_losing_streak": 3,
-        "avg_win_r": 0.5494962638406609,
-        "avg_loss_r": -0.4480185025670181,
+        "win_rate": 0.6779661016949152,
+        "profit_factor": 2.2312269700770213,
+        "expectancy_r": 0.1891407161266277,
+        "r_t_stat": 2.3396066165824165,
+        "total_return": 0.11346358006500279,
+        "max_drawdown": 0.03315402690585948,
+        "longest_losing_streak": 4,
+        "avg_win_r": 0.49657113110514695,
+        "avg_loss_r": -0.45808121014393927,
         "trades_per_month": 8.08990990990991
       },
       "IS (optimised)": {
-        "trades": 126,
-        "win_rate": 0.48412698412698413,
-        "profit_factor": 0.9979852474085849,
-        "expectancy_r": 0.0015507596354903273,
-        "r_t_stat": 0.024711551326998624,
-        "total_return": -0.0007547541538732716,
-        "max_drawdown": 0.0786686444297528,
-        "longest_losing_streak": 5,
-        "avg_win_r": 0.6235996342413683,
-        "avg_loss_r": -0.5822181842254106,
-        "trades_per_month": 7.361689059500961
+        "trades": 122,
+        "win_rate": 0.5081967213114754,
+        "profit_factor": 1.1502844222241881,
+        "expectancy_r": 0.04531635956624584,
+        "r_t_stat": 0.7186794059160811,
+        "total_return": 0.0521473453719814,
+        "max_drawdown": 0.05850089948038138,
+        "longest_losing_streak": 4,
+        "avg_win_r": 0.6306393147929399,
+        "avg_loss_r": -0.5595173608346715,
+        "trades_per_month": 7.127984644913629
       },
       "OOS (optimised)": {
-        "trades": 45,
-        "win_rate": 0.6666666666666666,
-        "profit_factor": 2.655955144686749,
-        "expectancy_r": 0.2388459248658728,
-        "r_t_stat": 2.7372739978151164,
-        "total_return": 0.11029080826463677,
-        "max_drawdown": 0.02223775131678039,
+        "trades": 46,
+        "win_rate": 0.6304347826086957,
+        "profit_factor": 1.8771688622825011,
+        "expectancy_r": 0.16675238660840624,
+        "r_t_stat": 1.8238777980868024,
+        "total_return": 0.07605174076642252,
+        "max_drawdown": 0.034179856626191975,
         "longest_losing_streak": 3,
-        "avg_win_r": 0.572970242141867,
-        "avg_loss_r": -0.42940270968611555,
-        "trades_per_month": 6.1702702702702705
+        "avg_win_r": 0.5548184884618266,
+        "avg_loss_r": -0.49524272831801686,
+        "trades_per_month": 6.307387387387387
       },
       "Walk-forward OOS": {
-        "trades": 90,
-        "win_rate": 0.5555555555555556,
-        "profit_factor": 1.189240049287812,
-        "expectancy_r": 0.05207997837807959,
-        "r_t_stat": 0.6730259339921385,
-        "total_return": 0.045253651965704966,
-        "max_drawdown": 0.09443876794167216,
-        "longest_losing_streak": 4,
-        "avg_win_r": 0.5924614906459736,
-        "avg_loss_r": -0.6233969119567879,
-        "trades_per_month": 7.22849604221636
+        "trades": 104,
+        "win_rate": 0.5384615384615384,
+        "profit_factor": 1.0728757994029445,
+        "expectancy_r": 0.026124040409510926,
+        "r_t_stat": 0.3423452678057166,
+        "total_return": 0.024769545328909626,
+        "max_drawdown": 0.07844678906742705,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.6652077667270867,
+        "avg_loss_r": -0.7194736402943275,
+        "trades_per_month": 8.35292875989446
       }
     },
     "wf_folds": [
       {
-        "train": "2024-09-23 -> 2025-09-23",
-        "test": "2025-09-23 -> 2025-12-22",
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
         "params": {
           "entry_hours": 3.0,
           "buffer_atr": 0.0,
           "stop_frac": 1.0,
           "target_r": 1.0
         },
-        "train_expectancy_r": 0.04218775590375953,
-        "test_trades": 38,
-        "test_expectancy_r": -0.14358201424423725,
-        "test_return": -0.052599078600002125
+        "train_expectancy_r": 0.07646139984152414,
+        "test_trades": 33,
+        "test_expectancy_r": -0.1539842876492801,
+        "test_return": -0.04861956930000344
       },
       {
-        "train": "2024-12-23 -> 2025-12-23",
-        "test": "2025-12-23 -> 2026-03-22",
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
         "params": {
           "entry_hours": 2.0,
           "buffer_atr": 0.05,
           "stop_frac": 1.0,
           "target_r": 1.0
         },
-        "train_expectancy_r": 0.07879994983227182,
-        "test_trades": 7,
-        "test_expectancy_r": -0.16775408765494934,
-        "test_return": -0.011768691746855686
+        "train_expectancy_r": 0.05642864726760334,
+        "test_trades": 11,
+        "test_expectancy_r": -0.12923333465843287,
+        "test_return": -0.013933714420293675
       },
       {
-        "train": "2025-03-23 -> 2026-03-23",
-        "test": "2026-03-23 -> 2026-06-22",
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
         "params": {
           "entry_hours": 2.0,
           "buffer_atr": 0.05,
           "stop_frac": 1.0,
           "target_r": 1.0
         },
-        "train_expectancy_r": 0.07324386800441868,
+        "train_expectancy_r": 0.06094145038240023,
         "test_trades": 20,
-        "test_expectancy_r": 0.16977111716915752,
-        "test_return": 0.03398683314865192
+        "test_expectancy_r": 0.2724276451980768,
+        "test_return": 0.053855803797413726
       },
       {
-        "train": "2025-06-23 -> 2026-06-23",
-        "test": "2026-06-23 -> 2026-09-22",
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.0,
+          "stop_frac": 0.5,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.08183815792302913,
+        "test_trades": 37,
+        "test_expectancy_r": 0.16050118893527243,
+        "test_return": 0.059164539654290804
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "entry_hours": 3.0,
+          "buffer_atr": 0.1,
+          "stop_frac": 1.0,
+          "target_r": 1.5
+        },
+        "train_expectancy_r": 0.18661164996532004,
+        "test_trades": 3,
+        "test_expectancy_r": -0.7223828394361588,
+        "test_return": -0.02136383202862846
+      }
+    ],
+    "grid_positive": 0.5925925925925926
+  },
+  "ny_momentum": {
+    "verdict": "IN-SAMPLE ONLY (does not survive out-of-sample)",
+    "stats": {
+      "Full (default)": {
+        "trades": 113,
+        "win_rate": 0.36283185840707965,
+        "profit_factor": 0.8525422420764581,
+        "expectancy_r": -0.08719442616062557,
+        "r_t_stat": -0.7804592122162957,
+        "total_return": -0.09899887944784713,
+        "max_drawdown": 0.2066665540885759,
+        "longest_losing_streak": 9,
+        "avg_win_r": 1.3549600560412924,
+        "avg_loss_r": -0.9084212840811623,
+        "trades_per_month": 4.623279569892473
+      },
+      "IS (default)": {
+        "trades": 81,
+        "win_rate": 0.3950617283950617,
+        "profit_factor": 1.0033482965340508,
+        "expectancy_r": 0.008821392448923174,
+        "r_t_stat": 0.06382985134547688,
+        "total_return": 0.001606629453943409,
+        "max_drawdown": 0.11808318472959184,
+        "longest_losing_streak": 8,
+        "avg_win_r": 1.4450179805354342,
+        "avg_loss_r": -0.9291029099749208,
+        "trades_per_month": 4.7325143953934745
+      },
+      "OOS (default)": {
+        "trades": 32,
+        "win_rate": 0.28125,
+        "profit_factor": 0.4753712045420365,
+        "expectancy_r": -0.33023446701604575,
+        "r_t_stat": -1.8512474350164279,
+        "total_return": -0.10035290109286177,
+        "max_drawdown": 0.13126818160026446,
+        "longest_losing_streak": 9,
+        "avg_win_r": 1.0347541022843445,
+        "avg_loss_r": -0.8643604289161984,
+        "trades_per_month": 4.387747747747748
+      },
+      "OOS 2x costs": {
+        "trades": 32,
+        "win_rate": 0.28125,
+        "profit_factor": 0.4583119983381289,
+        "expectancy_r": -0.34188230061254277,
+        "r_t_stat": -1.9498694019082576,
+        "total_return": -0.10325558825356695,
+        "max_drawdown": 0.13251512928684375,
+        "longest_losing_streak": 9,
+        "avg_win_r": 0.9999390990262541,
+        "avg_loss_r": -0.8669428482972892,
+        "trades_per_month": 4.387747747747748
+      },
+      "IS (optimised)": {
+        "trades": 77,
+        "win_rate": 0.6103896103896104,
+        "profit_factor": 1.4733804524695708,
+        "expectancy_r": 0.17948167159079356,
+        "r_t_stat": 1.7274498550556783,
+        "total_return": 0.1432849717589486,
+        "max_drawdown": 0.0518638864492549,
+        "longest_losing_streak": 3,
+        "avg_win_r": 0.8851822416384861,
+        "avg_loss_r": -0.9261158881505913,
+        "trades_per_month": 4.498809980806143
+      },
+      "OOS (optimised)": {
+        "trades": 25,
+        "win_rate": 0.28,
+        "profit_factor": 0.43401337555336644,
+        "expectancy_r": -0.34957164115560124,
+        "r_t_stat": -1.9891091656064344,
+        "total_return": -0.08347870378571753,
+        "max_drawdown": 0.11650880776528358,
+        "longest_losing_streak": 10,
+        "avg_win_r": 0.96179369821994,
+        "avg_loss_r": -0.8595470509127563,
+        "trades_per_month": 3.427927927927928
+      },
+      "Walk-forward OOS": {
+        "trades": 65,
+        "win_rate": 0.46153846153846156,
+        "profit_factor": 1.0559076527033704,
+        "expectancy_r": 0.025999123448971026,
+        "r_t_stat": 0.20616984361201998,
+        "total_return": 0.015296324748918622,
+        "max_drawdown": 0.07789285908354238,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.955373188225409,
+        "avg_loss_r": -0.7706072177879756,
+        "trades_per_month": 5.220580474934038
+      }
+    },
+    "wf_folds": [
+      {
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
+        "params": {
+          "obs_minutes": 45,
+          "thresh_atr": 0.2,
+          "stop_atr": 0.25,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.20192382164881253,
+        "test_trades": 14,
+        "test_expectancy_r": 0.397180636687503,
+        "test_return": 0.05596621584642425
+      },
+      {
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
+        "params": {
+          "obs_minutes": 60,
+          "thresh_atr": 0.1,
+          "stop_atr": 0.35,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.12484006195971942,
+        "test_trades": 27,
+        "test_expectancy_r": -0.11293925037535194,
+        "test_return": -0.029369400840769222
+      },
+      {
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
+        "params": {
+          "obs_minutes": 45,
+          "thresh_atr": 0.2,
+          "stop_atr": 0.35,
+          "target_r": 3.0
+        },
+        "train_expectancy_r": 0.2017600752374592,
+        "test_trades": 11,
+        "test_expectancy_r": 0.1841158017107085,
+        "test_return": 0.019474255132108098
+      },
+      {
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
+        "params": {
+          "obs_minutes": 45,
+          "thresh_atr": 0.2,
+          "stop_atr": 0.35,
+          "target_r": 3.0
+        },
+        "train_expectancy_r": 0.26725231953509626,
+        "test_trades": 11,
+        "test_expectancy_r": -0.5281113328661187,
+        "test_return": -0.05571975091545378
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "obs_minutes": 45,
+          "thresh_atr": 0.2,
+          "stop_atr": 0.35,
+          "target_r": 3.0
+        },
+        "train_expectancy_r": 0.03806165456191129,
+        "test_trades": 2,
+        "test_expectancy_r": 1.4813623567010457,
+        "test_return": 0.028991158331722167
+      }
+    ],
+    "grid_positive": 0.22916666666666666
+  },
+  "vwap_fade": {
+    "verdict": "NO EDGE (loses even in-sample after costs)",
+    "stats": {
+      "Full (default)": {
+        "trades": 256,
+        "win_rate": 0.39453125,
+        "profit_factor": 0.7829466280695565,
+        "expectancy_r": -0.09678500527953372,
+        "r_t_stat": -1.4419654249844798,
+        "total_return": -0.2307245538901571,
+        "max_drawdown": 0.2925886525437504,
+        "longest_losing_streak": 11,
+        "avg_win_r": 0.9962982718302954,
+        "avg_loss_r": -0.8090521729446482,
+        "trades_per_month": 10.473978494623656
+      },
+      "IS (default)": {
+        "trades": 191,
+        "win_rate": 0.3717277486910995,
+        "profit_factor": 0.7556258981917836,
+        "expectancy_r": -0.11339254587761753,
+        "r_t_stat": -1.4115322834584596,
+        "total_return": -0.20395884022968913,
+        "max_drawdown": 0.2925886525437504,
+        "longest_losing_streak": 11,
+        "avg_win_r": 1.0499357038358985,
+        "avg_loss_r": -0.8016950936247814,
+        "trades_per_month": 11.159385796545108
+      },
+      "OOS (default)": {
+        "trades": 65,
+        "win_rate": 0.46153846153846156,
+        "profit_factor": 0.8845914832099365,
+        "expectancy_r": -0.04798438598362599,
+        "r_t_stat": -0.40057401472042703,
+        "total_return": -0.03308422289242052,
+        "max_drawdown": 0.09116232499919746,
+        "longest_losing_streak": 7,
+        "avg_win_r": 0.8693563494170339,
+        "avg_loss_r": -0.8342764448984775,
+        "trades_per_month": 8.912612612612612
+      },
+      "OOS 2x costs": {
+        "trades": 65,
+        "win_rate": 0.46153846153846156,
+        "profit_factor": 0.8438961834770005,
+        "expectancy_r": -0.06543251872767916,
+        "r_t_stat": -0.5564166526141976,
+        "total_return": -0.04478983031293904,
+        "max_drawdown": 0.09844968209087246,
+        "longest_losing_streak": 7,
+        "avg_win_r": 0.835276645956222,
+        "avg_loss_r": -0.8374689455995945,
+        "trades_per_month": 8.912612612612612
+      },
+      "IS (optimised)": {
+        "trades": 94,
+        "win_rate": 0.2872340425531915,
+        "profit_factor": 0.9481535663900212,
+        "expectancy_r": -0.01112055998991331,
+        "r_t_stat": -0.057664693692409466,
+        "total_return": -0.028971621945743875,
+        "max_drawdown": 0.22586491282642918,
+        "longest_losing_streak": 19,
+        "avg_win_r": 2.2566003760409514,
+        "avg_loss_r": -0.9249782506292169,
+        "trades_per_month": 5.4920537428023035
+      },
+      "OOS (optimised)": {
+        "trades": 26,
+        "win_rate": 0.3076923076923077,
+        "profit_factor": 0.6853898338296415,
+        "expectancy_r": -0.20791554726337844,
+        "r_t_stat": -0.8033564721549459,
+        "total_return": -0.05448191497679267,
+        "max_drawdown": 0.10838058720102485,
+        "longest_losing_streak": 6,
+        "avg_win_r": 1.5182342395329556,
+        "avg_loss_r": -0.9750932302839712,
+        "trades_per_month": 3.565045045045045
+      },
+      "Walk-forward OOS": {
+        "trades": 65,
+        "win_rate": 0.4153846153846154,
+        "profit_factor": 0.9265119118875984,
+        "expectancy_r": -0.02727647109553803,
+        "r_t_stat": -0.16264275134825215,
+        "total_return": -0.02409068464723718,
+        "max_drawdown": 0.11691889998033185,
+        "longest_losing_streak": 6,
+        "avg_win_r": 1.1296928310284848,
+        "avg_loss_r": -0.8493336068152386,
+        "trades_per_month": 5.220580474934038
+      }
+    },
+    "wf_folds": [
+      {
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
+        "params": {
+          "dev_atr": 0.45,
+          "stop_atr": 0.35,
+          "min_reward_risk": 0.5
+        },
+        "train_expectancy_r": -0.16974743145120072,
+        "test_trades": 18,
+        "test_expectancy_r": 0.035157901877097615,
+        "test_return": 0.006085885793487789
+      },
+      {
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
+        "params": {
+          "dev_atr": 0.45,
+          "stop_atr": 0.25,
+          "min_reward_risk": 0.5
+        },
+        "train_expectancy_r": -0.09750317280244589,
+        "test_trades": 23,
+        "test_expectancy_r": 0.16800133030231426,
+        "test_return": 0.03344299294292319
+      },
+      {
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
+        "params": {
+          "dev_atr": 0.55,
+          "stop_atr": 0.25,
+          "min_reward_risk": 0.5
+        },
+        "train_expectancy_r": 0.07003900842803334,
+        "test_trades": 10,
+        "test_expectancy_r": -0.02109538424578288,
+        "test_return": -0.002585608112809501
+      },
+      {
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
+        "params": {
+          "dev_atr": 0.55,
+          "stop_atr": 0.15,
+          "min_reward_risk": 0.5
+        },
+        "train_expectancy_r": 0.045138696336387694,
+        "test_trades": 8,
+        "test_expectancy_r": -0.40802570946203703,
+        "test_return": -0.03230122007354075
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "dev_atr": 0.55,
+          "stop_atr": 0.25,
+          "min_reward_risk": 0.5
+        },
+        "train_expectancy_r": 0.2541913327435263,
+        "test_trades": 6,
+        "test_expectancy_r": -0.4657806556328054,
+        "test_return": -0.027539302317629022
+      }
+    ],
+    "grid_positive": 0.0
+  },
+  "lb_trend": {
+    "verdict": "INCONCLUSIVE (positive out-of-sample, but not convincing)",
+    "stats": {
+      "Full (default)": {
+        "trades": 103,
+        "win_rate": 0.5242718446601942,
+        "profit_factor": 1.3269329189395331,
+        "expectancy_r": 0.07953711382648974,
+        "r_t_stat": 1.1474695464422386,
+        "total_return": 0.08227270859112412,
+        "max_drawdown": 0.05329752422032354,
+        "longest_losing_streak": 5,
+        "avg_win_r": 0.6153878176727496,
+        "avg_loss_r": -0.5109922332693886,
+        "trades_per_month": 4.214139784946236
+      },
+      "IS (default)": {
+        "trades": 70,
+        "win_rate": 0.44285714285714284,
+        "profit_factor": 1.0548898943395086,
+        "expectancy_r": 0.0173818839147584,
+        "r_t_stat": 0.2021412448212211,
+        "total_return": 0.010891735541128211,
+        "max_drawdown": 0.05329752422032354,
+        "longest_losing_streak": 5,
+        "avg_win_r": 0.6812406337187408,
+        "avg_loss_r": -0.510300712083279,
+        "trades_per_month": 4.089827255278311
+      },
+      "OOS (default)": {
+        "trades": 33,
+        "win_rate": 0.696969696969697,
+        "profit_factor": 2.3108206384769843,
+        "expectancy_r": 0.21138154091198044,
+        "r_t_stat": 1.8411290098007755,
+        "total_return": 0.06976361365428163,
+        "max_drawdown": 0.023182978947999536,
+        "longest_losing_streak": 3,
+        "avg_win_r": 0.5266296743064139,
+        "avg_loss_r": -0.5136891658952165,
+        "trades_per_month": 4.524864864864865
+      },
+      "OOS 2x costs": {
+        "trades": 33,
+        "win_rate": 0.696969696969697,
+        "profit_factor": 2.231683303746626,
+        "expectancy_r": 0.19987537044792472,
+        "r_t_stat": 1.7589602508693425,
+        "total_return": 0.06569492108071695,
+        "max_drawdown": 0.023385494797470704,
+        "longest_losing_streak": 3,
+        "avg_win_r": 0.5117404701642146,
+        "avg_loss_r": -0.5174143588995423,
+        "trades_per_month": 4.524864864864865
+      },
+      "IS (optimised)": {
+        "trades": 104,
+        "win_rate": 0.5096153846153846,
+        "profit_factor": 1.2905953365878298,
+        "expectancy_r": 0.09474947184830564,
+        "r_t_stat": 1.0595477163100337,
+        "total_return": 0.09779355411000545,
+        "max_drawdown": 0.07481719881131975,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.7976697107171719,
+        "avg_loss_r": -0.6357362665840454,
+        "trades_per_month": 6.076314779270634
+      },
+      "OOS (optimised)": {
+        "trades": 47,
+        "win_rate": 0.5957446808510638,
+        "profit_factor": 1.397462783459918,
+        "expectancy_r": 0.12368251392643477,
+        "r_t_stat": 1.0109445884939476,
+        "total_return": 0.05689962539999316,
+        "max_drawdown": 0.05055854200989376,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.6955974531660309,
+        "avg_loss_r": -0.7191395017950756,
+        "trades_per_month": 6.444504504504505
+      },
+      "Walk-forward OOS": {
+        "trades": 51,
+        "win_rate": 0.5490196078431373,
+        "profit_factor": 1.2406598709106738,
+        "expectancy_r": 0.07269070833228936,
+        "r_t_stat": 0.6572194631212825,
+        "total_return": 0.035249778796421216,
+        "max_drawdown": 0.041610193012859883,
+        "longest_losing_streak": 5,
+        "avg_win_r": 0.651426973570414,
+        "avg_loss_r": -0.6318577884793406,
+        "trades_per_month": 4.096147757255937
+      }
+    },
+    "wf_folds": [
+      {
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 2.5
+        },
+        "train_expectancy_r": 0.09567684476985218,
+        "test_trades": 5,
+        "test_expectancy_r": -0.25083594305470924,
+        "test_return": -0.012502065555714759
+      },
+      {
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
         "params": {
           "entry_hours": 2.0,
           "buffer_atr": 0.05,
           "stop_frac": 1.0,
           "target_r": 2.0
         },
-        "train_expectancy_r": 0.05422802191562454,
-        "test_trades": 18,
-        "test_expectancy_r": 0.4526144364589404,
-        "test_return": 0.08211586756417111
+        "train_expectancy_r": 0.09681658334539923,
+        "test_trades": 4,
+        "test_expectancy_r": 0.07459339409174058,
+        "test_return": 0.002882033460542832
       },
       {
-        "train": "2025-09-23 -> 2026-09-23",
-        "test": "2026-09-23 -> 2026-10-07",
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
         "params": {
           "entry_hours": 3.0,
           "buffer_atr": 0.0,
           "stop_frac": 1.0,
           "target_r": 2.5
         },
-        "train_expectancy_r": 0.12552599977865092,
-        "test_trades": 7,
-        "test_expectancy_r": -0.0321269986787508,
-        "test_return": -0.002206872515377989
+        "train_expectancy_r": 0.13290312717047453,
+        "test_trades": 19,
+        "test_expectancy_r": 0.1280053980425108,
+        "test_return": 0.02375003777205409
+      },
+      {
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
+        "params": {
+          "entry_hours": 3.0,
+          "buffer_atr": 0.0,
+          "stop_frac": 1.0,
+          "target_r": 2.5
+        },
+        "train_expectancy_r": 0.17036678508520578,
+        "test_trades": 20,
+        "test_expectancy_r": 0.21718980163804852,
+        "test_return": 0.0425476504895701
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 1.5
+        },
+        "train_expectancy_r": 0.27736185164712185,
+        "test_trades": 3,
+        "test_expectancy_r": -0.7042887772384446,
+        "test_return": -0.02057935363706853
       }
     ],
-    "grid_positive": 0.4166666666666667
+    "grid_positive": 0.75
   },
-  "ny_momentum": {
-    "verdict": "IN-SAMPLE ONLY (does not survive out-of-sample)",
+  "lb_confirm": {
+    "verdict": "NO EDGE (loses even in-sample after costs)",
     "stats": {
       "Full (default)": {
-        "trades": 116,
-        "win_rate": 0.3620689655172414,
-        "profit_factor": 0.8591117509646314,
-        "expectancy_r": -0.08275133369385702,
-        "r_t_stat": -0.7416232416907864,
-        "total_return": -0.09608916843568482,
-        "max_drawdown": 0.18155023734341044,
+        "trades": 161,
+        "win_rate": 0.484472049689441,
+        "profit_factor": 0.9497168005252471,
+        "expectancy_r": -0.010922911188586671,
+        "r_t_stat": -0.190097246254316,
+        "total_return": -0.0233383435220329,
+        "max_drawdown": 0.14994197563652595,
         "longest_losing_streak": 8,
-        "avg_win_r": 1.3945455864506118,
-        "avg_loss_r": -0.9212171532353124,
-        "trades_per_month": 4.746021505376344
+        "avg_win_r": 0.6048744036330141,
+        "avg_loss_r": -0.5896240022257535,
+        "trades_per_month": 6.587150537634408
       },
       "IS (default)": {
-        "trades": 87,
-        "win_rate": 0.39080459770114945,
-        "profit_factor": 0.9870426873318217,
-        "expectancy_r": -0.0014254003745158763,
-        "r_t_stat": -0.010694951025786095,
-        "total_return": -0.006545589848180211,
-        "max_drawdown": 0.10684862289341353,
+        "trades": 116,
+        "win_rate": 0.4396551724137931,
+        "profit_factor": 0.7571856433403783,
+        "expectancy_r": -0.0818433233739893,
+        "r_t_stat": -1.177299117143934,
+        "total_return": -0.09431071293381332,
+        "max_drawdown": 0.14994197563652595,
         "longest_losing_streak": 8,
-        "avg_win_r": 1.453000963417301,
-        "avg_loss_r": -0.9344536337503985,
-        "trades_per_month": 5.083071017274473
+        "avg_win_r": 0.6154052153821263,
+        "avg_loss_r": -0.6289152537826339,
+        "trades_per_month": 6.7774280230326305
       },
       "OOS (default)": {
-        "trades": 29,
-        "win_rate": 0.27586206896551724,
-        "profit_factor": 0.4925775970085617,
-        "expectancy_r": -0.3267291336518805,
-        "r_t_stat": -1.6753251652367567,
-        "total_return": -0.0901902458464332,
-        "max_drawdown": 0.10376524680557228,
-        "longest_losing_streak": 6,
-        "avg_win_r": 1.1461102343421827,
-        "avg_loss_r": -0.8878107976496188,
-        "trades_per_month": 3.9763963963963964
+        "trades": 45,
+        "win_rate": 0.6,
+        "profit_factor": 1.9357673816253733,
+        "expectancy_r": 0.17189415133378452,
+        "r_t_stat": 1.7786362681067136,
+        "total_return": 0.07743341162606576,
+        "max_drawdown": 0.030246006597637844,
+        "longest_losing_streak": 3,
+        "avg_win_r": 0.5849828703291351,
+        "avg_loss_r": -0.44773892715924135,
+        "trades_per_month": 6.1702702702702705
       },
       "OOS 2x costs": {
-        "trades": 29,
-        "win_rate": 0.27586206896551724,
-        "profit_factor": 0.47073005601863965,
-        "expectancy_r": -0.33803214058750697,
-        "r_t_stat": -1.7631811566363333,
-        "total_return": -0.09447192382678182,
-        "max_drawdown": 0.10614365372623336,
-        "longest_losing_streak": 6,
-        "avg_win_r": 1.1103861234431434,
-        "avg_loss_r": -0.8898105268848975,
-        "trades_per_month": 3.9763963963963964
+        "trades": 45,
+        "win_rate": 0.6,
+        "profit_factor": 1.865223299414801,
+        "expectancy_r": 0.16041719983241629,
+        "r_t_stat": 1.6781730449104375,
+        "total_return": 0.07258016038285997,
+        "max_drawdown": 0.03023560162283205,
+        "longest_losing_streak": 3,
+        "avg_win_r": 0.5691555398891507,
+        "avg_loss_r": -0.45269031025268547,
+        "trades_per_month": 6.1702702702702705
       },
       "IS (optimised)": {
-        "trades": 79,
-        "win_rate": 0.6075949367088608,
-        "profit_factor": 1.4528180527557346,
-        "expectancy_r": 0.1714133613299387,
-        "r_t_stat": 1.6714150097661356,
-        "total_return": 0.13980090269494094,
-        "max_drawdown": 0.03701515886323123,
-        "longest_losing_streak": 3,
-        "avg_win_r": 0.8817735872829768,
-        "avg_loss_r": -0.9284992465973464,
-        "trades_per_month": 4.615662188099809
+        "trades": 92,
+        "win_rate": 0.4673913043478261,
+        "profit_factor": 0.9742279410615736,
+        "expectancy_r": -0.005041086250052168,
+        "r_t_stat": -0.05882617726360809,
+        "total_return": -0.007394485290022734,
+        "max_drawdown": 0.09308533174166916,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.6580930382428645,
+        "avg_loss_r": -0.5869751138662851,
+        "trades_per_month": 5.375201535508638
       },
       "OOS (optimised)": {
-        "trades": 26,
-        "win_rate": 0.2692307692307692,
-        "profit_factor": 0.4199571697213541,
-        "expectancy_r": -0.3726717791711265,
-        "r_t_stat": -2.175666088497598,
-        "total_return": -0.09154256935893235,
-        "max_drawdown": 0.10761446951334379,
+        "trades": 30,
+        "win_rate": 0.5666666666666667,
+        "profit_factor": 1.3581014105462543,
+        "expectancy_r": 0.062249789330313006,
+        "r_t_stat": 0.63227034001921,
+        "total_return": 0.018613022588568784,
+        "max_drawdown": 0.025317870429267284,
+        "longest_losing_streak": 4,
+        "avg_win_r": 0.4267716714723153,
+        "avg_loss_r": -0.4144326719323054,
+        "trades_per_month": 4.113513513513514
+      },
+      "Walk-forward OOS": {
+        "trades": 66,
+        "win_rate": 0.4393939393939394,
+        "profit_factor": 0.7206513378810366,
+        "expectancy_r": -0.12049492623132504,
+        "r_t_stat": -1.062266354174169,
+        "total_return": -0.07900611095876142,
+        "max_drawdown": 0.1813673374224816,
         "longest_losing_streak": 10,
-        "avg_win_r": 0.9689115225686178,
-        "avg_loss_r": -0.8669393113910322,
-        "trades_per_month": 3.565045045045045
+        "avg_win_r": 0.7982263812869504,
+        "avg_loss_r": -0.8405737888807843,
+        "trades_per_month": 5.30089709762533
+      }
+    },
+    "wf_folds": [
+      {
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
+        "params": {
+          "entry_hours": 3.0,
+          "buffer_atr": 0.0,
+          "stop_frac": 0.5,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.026760920359564653,
+        "test_trades": 26,
+        "test_expectancy_r": -0.542100010029026,
+        "test_return": -0.13140164385000452
+      },
+      {
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 0.5,
+          "target_r": 1.5
+        },
+        "train_expectancy_r": -0.04200639563566793,
+        "test_trades": 5,
+        "test_expectancy_r": -0.8273785342013593,
+        "test_return": -0.039908502369601195
+      },
+      {
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 0.5,
+          "target_r": 1.5
+        },
+        "train_expectancy_r": 0.024167083466094506,
+        "test_trades": 16,
+        "test_expectancy_r": 0.47030085584907655,
+        "test_return": 0.07609850949258101
+      },
+      {
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 2.0
+        },
+        "train_expectancy_r": 0.038524937552115515,
+        "test_trades": 16,
+        "test_expectancy_r": 0.3052414248301262,
+        "test_return": 0.04818368445885035
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "entry_hours": 4.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 2.0
+        },
+        "train_expectancy_r": 0.18313223164383954,
+        "test_trades": 3,
+        "test_expectancy_r": -0.7099495634577407,
+        "test_return": -0.02088050779723971
+      }
+    ],
+    "grid_positive": 0.16666666666666666
+  },
+  "lb_early_exit": {
+    "verdict": "INCONCLUSIVE (positive out-of-sample, but not convincing)",
+    "stats": {
+      "Full (default)": {
+        "trades": 209,
+        "win_rate": 0.48325358851674644,
+        "profit_factor": 1.0037470762296452,
+        "expectancy_r": 0.002121223481941795,
+        "r_t_stat": 0.06781064073820096,
+        "total_return": 0.0012618503833354833,
+        "max_drawdown": 0.06641356324959229,
+        "longest_losing_streak": 9,
+        "avg_win_r": 0.35057584644336964,
+        "avg_loss_r": -0.32374837762087505,
+        "trades_per_month": 8.551021505376344
+      },
+      "IS (default)": {
+        "trades": 150,
+        "win_rate": 0.4866666666666667,
+        "profit_factor": 0.9321331370860925,
+        "expectancy_r": -0.010341134901271207,
+        "r_t_stat": -0.2659444764415041,
+        "total_return": -0.01771219312701422,
+        "max_drawdown": 0.06641356324959229,
+        "longest_losing_streak": 9,
+        "avg_win_r": 0.3516351003588224,
+        "avg_loss_r": -0.35351340988811325,
+        "trades_per_month": 8.763915547024952
+      },
+      "OOS (default)": {
+        "trades": 59,
+        "win_rate": 0.4745762711864407,
+        "profit_factor": 1.2548240658778635,
+        "expectancy_r": 0.033805185473161296,
+        "r_t_stat": 0.6718753444431905,
+        "total_return": 0.019637314418563534,
+        "max_drawdown": 0.02560978583061115,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.34781422016379643,
+        "avg_loss_r": -0.2498158781183801,
+        "trades_per_month": 8.08990990990991
+      },
+      "OOS 2x costs": {
+        "trades": 59,
+        "win_rate": 0.4745762711864407,
+        "profit_factor": 1.1754703540163194,
+        "expectancy_r": 0.02408597459380037,
+        "r_t_stat": 0.4838679826312802,
+        "total_return": 0.013865605726432362,
+        "max_drawdown": 0.026517324011671894,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.33458319984232876,
+        "avg_loss_r": -0.25636313208228984,
+        "trades_per_month": 8.08990990990991
+      },
+      "IS (optimised)": {
+        "trades": 189,
+        "win_rate": 0.48677248677248675,
+        "profit_factor": 1.1028636221815136,
+        "expectancy_r": 0.021069153062521283,
+        "r_t_stat": 0.5617844233007934,
+        "total_return": 0.03754369416000736,
+        "max_drawdown": 0.0510843055560877,
+        "longest_losing_streak": 7,
+        "avg_win_r": 0.4410652398967622,
+        "avg_loss_r": -0.3772776509452124,
+        "trades_per_month": 11.042533589251441
+      },
+      "OOS (optimised)": {
+        "trades": 82,
+        "win_rate": 0.5121951219512195,
+        "profit_factor": 1.2211131163712592,
+        "expectancy_r": 0.03553466527659787,
+        "r_t_stat": 0.6977512106201794,
+        "total_return": 0.02874341269998859,
+        "max_drawdown": 0.03172612802131592,
+        "longest_losing_streak": 5,
+        "avg_win_r": 0.37462100743327853,
+        "avg_loss_r": -0.3205059939879168,
+        "trades_per_month": 11.243603603603605
+      },
+      "Walk-forward OOS": {
+        "trades": 104,
+        "win_rate": 0.4807692307692308,
+        "profit_factor": 1.1014929213742128,
+        "expectancy_r": 0.017510267805397627,
+        "r_t_stat": 0.3826381532643281,
+        "total_return": 0.017771019471771732,
+        "max_drawdown": 0.03624408433536735,
+        "longest_losing_streak": 7,
+        "avg_win_r": 0.38870849942399816,
+        "avg_loss_r": -0.3261917985081213,
+        "trades_per_month": 8.35292875989446
+      }
+    },
+    "wf_folds": [
+      {
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
+        "params": {
+          "entry_hours": 3.0,
+          "buffer_atr": 0.0,
+          "stop_frac": 1.0,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.0329707576269684,
+        "test_trades": 33,
+        "test_expectancy_r": -0.0009012485631974013,
+        "test_return": -0.00020476710000394416
+      },
+      {
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.059550565748091644,
+        "test_trades": 11,
+        "test_expectancy_r": -0.18764505251978153,
+        "test_return": -0.019332303847296672
+      },
+      {
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.0876459305149275,
+        "test_trades": 20,
+        "test_expectancy_r": 0.17542446251072735,
+        "test_return": 0.03449880185755916
+      },
+      {
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.0,
+          "stop_frac": 1.0,
+          "target_r": 1.5
+        },
+        "train_expectancy_r": 0.06757939130894924,
+        "test_trades": 37,
+        "test_expectancy_r": 0.058128382251617525,
+        "test_return": 0.020904111144587123
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "entry_hours": 2.0,
+          "buffer_atr": 0.1,
+          "stop_frac": 0.75,
+          "target_r": 1.0
+        },
+        "train_expectancy_r": 0.14457965263617895,
+        "test_trades": 3,
+        "test_expectancy_r": -0.5814449204866432,
+        "test_return": -0.017116138031423533
+      }
+    ],
+    "grid_positive": 0.3055555555555556
+  },
+  "lb_tight_range": {
+    "verdict": "INCONCLUSIVE (positive out-of-sample, but not convincing)",
+    "stats": {
+      "Full (default)": {
+        "trades": 154,
+        "win_rate": 0.512987012987013,
+        "profit_factor": 1.2260007809547337,
+        "expectancy_r": 0.06843992918811592,
+        "r_t_stat": 1.0889391690502968,
+        "total_return": 0.10224817294346589,
+        "max_drawdown": 0.09157281307741076,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.6954228661358732,
+        "avg_loss_r": -0.5919820977301885,
+        "trades_per_month": 6.300752688172043
+      },
+      "IS (default)": {
+        "trades": 111,
+        "win_rate": 0.43243243243243246,
+        "profit_factor": 0.9764980775898945,
+        "expectancy_r": -0.004834106268722409,
+        "r_t_stat": -0.06334559476092948,
+        "total_return": -0.00902824369045585,
+        "max_drawdown": 0.09157281307741076,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.7757103592520896,
+        "avg_loss_r": -0.5995346514274363,
+        "trades_per_month": 6.485297504798465
+      },
+      "OOS (default)": {
+        "trades": 43,
+        "win_rate": 0.7209302325581395,
+        "profit_factor": 2.6371197443259655,
+        "expectancy_r": 0.2575891835069311,
+        "r_t_stat": 2.4581705602611756,
+        "total_return": 0.11327897352499328,
+        "max_drawdown": 0.023817441264051536,
+        "longest_losing_streak": 2,
+        "avg_win_r": 0.5711067477623769,
+        "avg_loss_r": -0.552331190819637,
+        "trades_per_month": 5.896036036036036
+      },
+      "OOS 2x costs": {
+        "trades": 43,
+        "win_rate": 0.7209302325581395,
+        "profit_factor": 2.5365217649556846,
+        "expectancy_r": 0.24499550127900221,
+        "r_t_stat": 2.3634530643821132,
+        "total_return": 0.10675879717285941,
+        "max_drawdown": 0.023670484041993033,
+        "longest_losing_streak": 2,
+        "avg_win_r": 0.5550749486781505,
+        "avg_loss_r": -0.5560430711687976,
+        "trades_per_month": 5.896036036036036
+      },
+      "IS (optimised)": {
+        "trades": 90,
+        "win_rate": 0.4888888888888889,
+        "profit_factor": 1.1448349728172194,
+        "expectancy_r": 0.04709863971756402,
+        "r_t_stat": 0.5998365150730048,
+        "total_return": 0.04066115534261061,
+        "max_drawdown": 0.0549304869974711,
+        "longest_losing_streak": 4,
+        "avg_win_r": 0.7169698554813658,
+        "avg_loss_r": -0.5936477405782463,
+        "trades_per_month": 5.258349328214972
+      },
+      "OOS (optimised)": {
+        "trades": 35,
+        "win_rate": 0.6571428571428571,
+        "profit_factor": 2.0699162958231985,
+        "expectancy_r": 0.204976384969978,
+        "r_t_stat": 1.8410349858157244,
+        "total_return": 0.07195646578070969,
+        "max_drawdown": 0.023717628298038973,
+        "longest_losing_streak": 3,
+        "avg_win_r": 0.6000933810341249,
+        "avg_loss_r": -0.552331190819637,
+        "trades_per_month": 4.7990990990991
       },
       "Walk-forward OOS": {
         "trades": 72,
-        "win_rate": 0.2361111111111111,
-        "profit_factor": 0.5206334018360954,
-        "expectancy_r": -0.3093331456862851,
-        "r_t_stat": -2.2702210230058464,
-        "total_return": -0.20165645715215685,
-        "max_drawdown": 0.2016564571521568,
-        "longest_losing_streak": 15,
-        "avg_win_r": 1.538694965045048,
-        "avg_loss_r": -0.8805418344577882,
+        "win_rate": 0.5138888888888888,
+        "profit_factor": 1.0406863843462348,
+        "expectancy_r": 0.016051335714229748,
+        "r_t_stat": 0.16987687786469757,
+        "total_return": 0.009997289593199898,
+        "max_drawdown": 0.08078174391080252,
+        "longest_losing_streak": 6,
+        "avg_win_r": 0.7135935303683282,
+        "avg_loss_r": -0.7213504129201028,
         "trades_per_month": 5.782796833773087
       }
     },
     "wf_folds": [
       {
-        "train": "2024-09-23 -> 2025-09-23",
-        "test": "2025-09-23 -> 2025-12-22",
+        "train": "2024-10-21 -> 2025-10-21",
+        "test": "2025-10-21 -> 2026-01-20",
         "params": {
-          "obs_minutes": 45,
-          "thresh_atr": 0.1,
-          "stop_atr": 0.15,
-          "target_r": 3.0
-        },
-        "train_expectancy_r": 0.34016621032192296,
-        "test_trades": 34,
-        "test_expectancy_r": -0.47416918831931953,
-        "test_return": -0.15011885605036468
-      },
-      {
-        "train": "2024-12-23 -> 2025-12-23",
-        "test": "2025-12-23 -> 2026-03-22",
-        "params": {
-          "obs_minutes": 45,
-          "thresh_atr": 0.2,
-          "stop_atr": 0.25,
+          "entry_hours": 4.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
           "target_r": 1.0
         },
-        "train_expectancy_r": 0.18870125301115814,
-        "test_trades": 12,
-        "test_expectancy_r": -0.02163341883264906,
-        "test_return": -0.0029494122690709723
+        "train_expectancy_r": 0.09045085589377831,
+        "test_trades": 20,
+        "test_expectancy_r": -0.21822380866931868,
+        "test_return": -0.04231331202785926
       },
       {
-        "train": "2025-03-23 -> 2026-03-23",
-        "test": "2026-03-23 -> 2026-06-22",
+        "train": "2025-01-21 -> 2026-01-21",
+        "test": "2026-01-21 -> 2026-04-20",
         "params": {
-          "obs_minutes": 45,
-          "thresh_atr": 0.2,
-          "stop_atr": 0.35,
-          "target_r": 3.0
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 1.0
         },
-        "train_expectancy_r": 0.26016137314903715,
-        "test_trades": 7,
-        "test_expectancy_r": 0.37681603601480085,
-        "test_return": 0.025300544935998204
+        "train_expectancy_r": 0.073192419891582,
+        "test_trades": 10,
+        "test_expectancy_r": -0.24129991801567807,
+        "test_return": -0.023085686449472065
       },
       {
-        "train": "2025-06-23 -> 2026-06-23",
-        "test": "2026-06-23 -> 2026-09-22",
+        "train": "2025-04-21 -> 2026-04-21",
+        "test": "2026-04-21 -> 2026-07-20",
         "params": {
-          "obs_minutes": 45,
-          "thresh_atr": 0.2,
-          "stop_atr": 0.35,
-          "target_r": 3.0
+          "entry_hours": 2.0,
+          "buffer_atr": 0.05,
+          "stop_frac": 1.0,
+          "target_r": 1.0
         },
-        "train_expectancy_r": 0.27591355498201625,
+        "train_expectancy_r": 0.052204958181655055,
         "test_trades": 15,
-        "test_expectancy_r": -0.4310877794172876,
-        "test_return": -0.061842902897147556
+        "test_expectancy_r": 0.29769012858472016,
+        "test_return": 0.04374901290923794
       },
       {
-        "train": "2025-09-23 -> 2026-09-23",
-        "test": "2026-09-23 -> 2026-10-07",
+        "train": "2025-07-21 -> 2026-07-21",
+        "test": "2026-07-21 -> 2026-10-20",
         "params": {
-          "obs_minutes": 30,
-          "thresh_atr": 0.1,
-          "stop_atr": 0.15,
+          "entry_hours": 2.0,
+          "buffer_atr": 0.0,
+          "stop_frac": 0.5,
           "target_r": 1.0
         },
-        "train_expectancy_r": -0.001420175676914708,
-        "test_trades": 4,
-        "test_expectancy_r": -0.515507155352042,
-        "test_return": -0.02053781637214036
+        "train_expectancy_r": 0.13117508415727339,
+        "test_trades": 26,
+        "test_expectancy_r": 0.171839215238342,
+        "test_return": 0.044529764838618924
+      },
+      {
+        "train": "2025-10-21 -> 2026-10-21",
+        "test": "2026-10-21 -> 2026-11-04",
+        "params": {
+          "entry_hours": 3.0,
+          "buffer_atr": 0.1,
+          "stop_frac": 1.0,
+          "target_r": 1.5
+        },
+        "train_expectancy_r": 0.20265226652832535,
+        "test_trades": 1,
+        "test_expectancy_r": -1.0,
+        "test_return": -0.009798939998647227
       }
     ],
-    "grid_positive": 0.2361111111111111
-  },
-  "vwap_fade": {
-    "verdict": "NO EDGE (loses even in-sample after costs)",
-    "stats": {
-      "Full (default)": {
-        "trades": 252,
-        "win_rate": 0.3968253968253968,
-        "profit_factor": 0.7677798356593952,
-        "expectancy_r": -0.10478645171193172,
-        "r_t_stat": -1.5563697327536865,
-        "total_return": -0.24069230725817414,
-        "max_drawdown": 0.31392091182555637,
-        "longest_losing_streak": 11,
-        "avg_win_r": 0.97156683431519,
-        "avg_loss_r": -0.8129136135718802,
-        "trades_per_month": 10.310322580645161
-      },
-      "IS (default)": {
-        "trades": 187,
-        "win_rate": 0.37433155080213903,
-        "profit_factor": 0.7537199048297792,
-        "expectancy_r": -0.1124902487151406,
-        "r_t_stat": -1.3954368697996204,
-        "total_return": -0.19762067065016264,
-        "max_drawdown": 0.31392091182555637,
-        "longest_losing_streak": 11,
-        "avg_win_r": 1.0305240973099334,
-        "avg_loss_r": -0.7963449856532193,
-        "trades_per_month": 10.925681381957775
-      },
-      "OOS (default)": {
-        "trades": 65,
-        "win_rate": 0.46153846153846156,
-        "profit_factor": 0.8155829822491639,
-        "expectancy_r": -0.08262322033346929,
-        "r_t_stat": -0.6842862877075714,
-        "total_return": -0.05408593925077565,
-        "max_drawdown": 0.09259509525016522,
-        "longest_losing_streak": 4,
-        "avg_win_r": 0.8339998873274549,
-        "avg_loss_r": -0.8683001697571185,
-        "trades_per_month": 8.912612612612612
-      },
-      "OOS 2x costs": {
-        "trades": 65,
-        "win_rate": 0.46153846153846156,
-        "profit_factor": 0.7863617490567674,
-        "expectancy_r": -0.09771176248898593,
-        "r_t_stat": -0.8225449433128695,
-        "total_return": -0.06270532618580238,
-        "max_drawdown": 0.09940552646193457,
-        "longest_losing_streak": 4,
-        "avg_win_r": 0.8038293981882536,
-        "avg_loss_r": -0.8704613287837626,
-        "trades_per_month": 8.912612612612612
-      },
-      "IS (optimised)": {
-        "trades": 87,
-        "win_rate": 0.28735632183908044,
-        "profit_factor": 0.884381325251855,
-        "expectancy_r": -0.05213257182121023,
-        "r_t_stat": -0.2638335846175987,
-        "total_return": -0.060178110991587985,
-        "max_drawdown": 0.22638759151297955,
-        "longest_losing_streak": 19,
-        "avg_win_r": 2.0975203617484897,
-        "avg_loss_r": -0.918928109550928,
-        "trades_per_month": 5.083071017274473
-      },
-      "OOS (optimised)": {
-        "trades": 26,
-        "win_rate": 0.38461538461538464,
-        "profit_factor": 1.195338606124087,
-        "expectancy_r": 0.13542287005696904,
-        "r_t_stat": 0.4187905238001321,
-        "total_return": 0.032591372374630945,
-        "max_drawdown": 0.06002720851973302,
-        "longest_losing_streak": 4,
-        "avg_win_r": 1.9520994621481194,
-        "avg_loss_r": -1.0,
-        "trades_per_month": 3.565045045045045
-      },
-      "Walk-forward OOS": {
-        "trades": 56,
-        "win_rate": 0.375,
-        "profit_factor": 1.2848541272313432,
-        "expectancy_r": 0.1985148204569705,
-        "r_t_stat": 0.6845972256685102,
-        "total_return": 0.10246111627212229,
-        "max_drawdown": 0.08235768276286166,
-        "longest_losing_streak": 6,
-        "avg_win_r": 2.196039521218588,
-        "avg_loss_r": -1.0,
-        "trades_per_month": 4.4977308707124015
-      }
-    },
-    "wf_folds": [
-      {
-        "train": "2024-09-23 -> 2025-09-23",
-        "test": "2025-09-23 -> 2025-12-22",
-        "params": {
-          "dev_atr": 0.55,
-          "stop_atr": 0.15,
-          "min_reward_risk": 0.5
-        },
-        "train_expectancy_r": -0.2321057177866992,
-        "test_trades": 22,
-        "test_expectancy_r": -0.10158805765068278,
-        "test_return": -0.024218165357150268
-      },
-      {
-        "train": "2024-12-23 -> 2025-12-23",
-        "test": "2025-12-23 -> 2026-03-22",
-        "params": {
-          "dev_atr": 0.55,
-          "stop_atr": 0.15,
-          "min_reward_risk": 0.5
-        },
-        "train_expectancy_r": -0.14884306913312328,
-        "test_trades": 16,
-        "test_expectancy_r": 0.9117444450952301,
-        "test_return": 0.14537763909570356
-      },
-      {
-        "train": "2025-03-23 -> 2026-03-23",
-        "test": "2026-03-23 -> 2026-06-22",
-        "params": {
-          "dev_atr": 0.55,
-          "stop_atr": 0.15,
-          "min_reward_risk": 0.5
-        },
-        "train_expectancy_r": 0.09626721826715966,
-        "test_trades": 13,
-        "test_expectancy_r": -0.08579694034345318,
-        "test_return": -0.011696481699493777
-      },
-      {
-        "train": "2025-06-23 -> 2026-06-23",
-        "test": "2026-06-23 -> 2026-09-22",
-        "params": {
-          "dev_atr": 0.55,
-          "stop_atr": 0.25,
-          "min_reward_risk": 0.5
-        },
-        "train_expectancy_r": -4.522266034361578e-05,
-        "test_trades": 5,
-        "test_expectancy_r": -0.02415673663068425,
-        "test_return": -0.0019058496721818807
-      },
-      {
-        "train": "2025-09-23 -> 2026-09-23",
-        "test": "2026-09-23 -> 2026-10-07",
-        "params": {
-          "dev_atr": 0.55,
-          "stop_atr": 0.25,
-          "min_reward_risk": 0.5
-        },
-        "train_expectancy_r": 0.1640893082352648,
-        "test_trades": 0,
-        "test_expectancy_r": NaN,
-        "test_return": 0.0
-      }
-    ],
-    "grid_positive": 0.0
+    "grid_positive": 0.5555555555555556
   }
 }
