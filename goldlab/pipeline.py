@@ -239,7 +239,7 @@ def write_report(reports: list[StrategyReport], q: DataQuality, cfg: RunConfig, 
     L += ["", ("Bottom line: " + (
         f"only {', '.join(winners)} clears every pre-registered hurdle. Treat it as a candidate "
         "for forward/paper testing, not as proven." if winners else
-        "none of the three strategies shows an edge that survives costs, out-of-sample data, "
+        f"none of the {len(reports)} strategies shows an edge that survives costs, out-of-sample data, "
         "walk-forward re-optimisation and parameter perturbation. Do not trade them as specified."
     )), ""]
     L += ["Verdict rules (fixed before running): an edge requires positive walk-forward OOS "

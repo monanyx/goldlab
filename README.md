@@ -226,7 +226,7 @@ historical bars:
 
 It then compares the resulting paper trades with `Backtester.run()` on the
 same bars and writes `results/replay_check.md`. The test suite runs the same
-check for all three strategies (`tests/test_replay_equivalence.py`).
+check for the strategies (`tests/test_replay_equivalence.py`, `tests/test_lb_variants.py`).
 
 Results so far, on synthetic data only (no real data is in the repo):
 `replay --synthetic` gave 1,469 runs and 26 trades, an identical match. Run it
@@ -332,6 +332,11 @@ Backtests the strategies with realistic costs and risk rules, and checks
 whether any apparent edge survives out-of-sample data, walk-forward
 re-optimisation and parameter changes. The output is `REPORT.md` with a verdict
 for each strategy, plus PNG charts.
+
+Four pre-registered London-breakout improvements (trend filter, close
+confirmation, early exit, tight ranges) are tested alongside the original
+strategies. The hypotheses and the rule for adopting a variant were fixed before
+the results existed: see [docs/improvement-tests.md](docs/improvement-tests.md).
 
 ### Run it on GitHub (easiest)
 

@@ -24,6 +24,14 @@ class Strategy:
     def signals(self, df: pd.DataFrame) -> StrategySignals:  # pragma: no cover
         raise NotImplementedError
 
+    def required_history_days(self) -> int:
+        """Trading days of history the features need (daily ATR uses the 14 previous days).
+
+        The live bot must fetch at least this much, or its signals would differ from
+        the backtest's.
+        """
+        return 15
+
     @property
     def params(self) -> dict:
         return {f.name: getattr(self, f.name) for f in fields(self)}

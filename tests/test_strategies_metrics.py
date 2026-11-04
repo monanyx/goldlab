@@ -19,18 +19,27 @@ def bars():
 
 @pytest.mark.parametrize("cls", ALL_STRATEGIES)
 def test_strategies_are_causal(cls, bars):
-    """Signals up to bar k must not change when future bars are removed."""
-    cut = int(len(bars) * 0.6)
+    """An order created at bar i may only depend on bars <= i: cutting the data anywhere
+    must leave every earlier order (and the flat mask) unchanged."""
     full = cls().signals(bars)
-    part = cls().signals(bars.iloc[:cut])
-    # Ignore the last day (truncation can drop the day-level gating of an unfinished day).
-    last_day_start = int(np.flatnonzero(bars["trade_date"].to_numpy() == bars["trade_date"].iloc[cut - 1])[0])
-    keys = lambda d: {i: [(o.side, o.kind, round(o.price or 0, 6), o.stop_dist, o.target_r,
-                           round(o.target_price or 0, 6)) for o in v]
-                      for i, v in d.items() if i < last_day_start}
-    assert keys(full.orders) == keys(part.orders)
-    assert len(keys(full.orders)) >= 3
-    assert (full.flat[:cut] == part.flat).all()
+
+    def key(d, cut):
+        return {i: [(o.side, o.kind, round(o.price or 0, 6), o.stop_dist, o.target_r,
+                     round(o.target_price or 0, 6), o.expires) for o in v]
+                for i, v in d.items() if i < cut}
+
+    rng = np.random.default_rng(0)
+    assert len(full.orders) >= 3
+    # 1) every order must be reproducible from the bars up to and including its own bar
+    order_bars = sorted(full.orders)
+    for i in sorted(rng.choice(order_bars, min(40, len(order_bars)), replace=False)):
+        part = cls().signals(bars.iloc[: i + 1])
+        assert key(part.orders, i + 1).get(i) == key(full.orders, i + 1)[i], f"look-ahead at bar {i}"
+    # 2) random cuts: nothing earlier may change, including the flat mask
+    for cut in sorted(rng.integers(len(bars) // 3, len(bars), 8)):
+        part = cls().signals(bars.iloc[:cut])
+        assert key(full.orders, cut) == key(part.orders, cut), f"look-ahead before bar {cut}"
+        assert (full.flat[:cut] == part.flat).all()
 
 
 @pytest.mark.parametrize("cls", ALL_STRATEGIES)
