@@ -1,39 +1,31 @@
 {
  "engine": {
   "equity": 9850.307597642854,
-  "pending": [
-   {
-    "side": 1,
-    "kind": "stop",
-    "price": 4146.189855642857,
-    "stop_price": null,
-    "stop_dist": 38.06163564285734,
-    "target_price": null,
-    "target_r": 1.5,
-    "expires": "2026-11-10T11:00:00+00:00",
-    "group": "lb20261110",
-    "tag": "long_break",
-    "reason": "Break above Asia range 4108.13-4141.88 (width 33.75 = 0.39x daily ATR); London-open breakout, valid until 11:00 UTC"
-   },
-   {
-    "side": -1,
-    "kind": "stop",
-    "price": 4103.815784357143,
-    "stop_price": null,
-    "stop_dist": 38.06163564285734,
-    "target_price": null,
-    "target_r": 1.5,
-    "expires": "2026-11-10T11:00:00+00:00",
-    "group": "lb20261110",
-    "tag": "short_break",
-    "reason": "Break below Asia range 4108.13-4141.88 (width 33.75 = 0.39x daily ATR); London-open breakout, valid until 11:00 UTC"
-   }
-  ],
-  "pos": null,
+  "pending": [],
+  "pos": {
+   "trade_date": "2026-11-10T00:00:00",
+   "side": -1,
+   "entry_time": "2026-11-10T09:00:00+00:00",
+   "entry_price": 4103.590784357142,
+   "stop": 4141.87742,
+   "target": 4046.7233308928567,
+   "units": 2.0,
+   "risk_usd": 77.02327128571596,
+   "tag": "short_break",
+   "reason": "Break below Asia range 4108.13-4141.88 (width 33.75 = 0.39x daily ATR); London-open breakout, valid until 11:00 UTC",
+   "exit_time": null,
+   "exit_price": null,
+   "exit_reason": "",
+   "costs_usd": 0.44999999999999996,
+   "swap_usd": 0.0,
+   "pnl_usd": 0.0,
+   "r_multiple": 0.0,
+   "equity_after": 0.0
+  },
   "day": "2026-11-10T00:00:00",
   "day_start_equity": 9850.307597642854,
   "day_pnl": 0.0,
-  "day_trades": 0,
+  "day_trades": 1,
   "trades": [
    {
     "trade_date": "2026-10-12T00:00:00",
@@ -143,7 +135,7 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-11-10T08:45:00+00:00"
+  "last_time": "2026-11-10T09:00:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
