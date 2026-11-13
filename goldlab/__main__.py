@@ -26,6 +26,9 @@ def _add_common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--risk-pct", type=float, default=None, help="e.g. 0.01 for 1%%")
     p.add_argument("--daily-loss", type=float, default=None, help="e.g. 0.03 for 3%%")
     p.add_argument("--max-trades", type=int, default=None)
+    p.add_argument("--holdout-end", default=None,
+                   help="bars before this date (YYYY-MM-DD) form the untouched holdout; "
+                        "'none' disables it (default: the pre-registered 2024-10-21)")
 
 
 def _cfg(args, synthetic: bool, label: str):
@@ -44,6 +47,8 @@ def _cfg(args, synthetic: bool, label: str):
     cfg = RunConfig(is_fraction=args.is_fraction, train_months=args.train_months,
                     test_months=args.test_months, costs=costs, risk=risk,
                     synthetic=synthetic, data_label=label)
+    if args.holdout_end is not None:
+        cfg.holdout_end = None if args.holdout_end.lower() == "none" else args.holdout_end
     if args.workers:
         cfg.workers = args.workers
     return cfg
@@ -67,7 +72,7 @@ def main(argv=None) -> int:
     p_smoke = sub.add_parser("smoke", help="run the whole pipeline on synthetic data")
     _add_common(p_smoke)
     p_smoke.set_defaults(out=Path("smoke_results"), report=Path("smoke_results/REPORT_SYNTHETIC.md"),
-                         train_months=6, test_months=2)
+                         train_months=6, test_months=2, holdout_end="2023-05-01")
 
     p_f = sub.add_parser("fetch-dukascopy", help="download Dukascopy 1m BID candles -> M5 CSV")
     p_f.add_argument("--start", required=True)

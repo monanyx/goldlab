@@ -239,7 +239,7 @@ on real data once you've added a CSV to `data/`.
 verdict is `EDGE`. Otherwise it falls back to `london_breakout`.
 
 You can also name a built-in strategy (`london_breakout`, `ny_momentum`,
-`vwap_fade`) or any class with `signals(df) -> StrategySignals`, for example
+`vwap_fade`, `regime_switch`, or a round-1 variant) or any class with `signals(df) -> StrategySignals`, for example
 `strategy = "mypkg.mystrat:MyStrategy"`. Parameters go in
 `strategy_params = { ... }`.
 
@@ -338,14 +338,27 @@ confirmation, early exit, tight ranges) are tested alongside the original
 strategies. The hypotheses and the rule for adopting a variant were fixed before
 the results existed: see [docs/improvement-tests.md](docs/improvement-tests.md).
 
+**Round 2: the regime switch** (`regime_switch`). At the London open it reads
+the day from data known at that moment (trend distance from the 20-day average,
+yesterday's range, the Asia range), labels it a trend, range or chaos day, and
+trades accordingly: a breakout with the trend, a fade of a false break, or
+nothing. Its rules, grid, adoption rule and stopping rule were committed before
+it ran on real data: see [docs/regime-switch-test.md](docs/regime-switch-test.md).
+Because its rules were chosen after seeing round 1, it must also pass an
+**untouched holdout**: every bar before 2024-10-21, which no earlier run used.
+Its verdict only says `EDGE` (and the bot's `auto` only switches to it) if it
+passes the development window *and* the holdout.
+
 ### Run it on GitHub (easiest)
 
 Go to **Actions → research → Run workflow**. In about 10 minutes it:
 
-1. Downloads 2 years of XAU/USD history from Twelve Data, the same feed the
+1. Downloads 4 years of XAU/USD history from Twelve Data, the same feed the
    bot trades on, using your `TWELVEDATA_API_KEY` secret. If that fails it
    tries Dukascopy, which is free but often rate-limits GitHub's servers.
-2. Runs the full research on 15-minute bars, the same timeframe the bot uses.
+2. Runs the full research on 15-minute bars, the same timeframe the bot uses,
+   on the development window (2024-10-21 onwards, as in round 1), then runs
+   every strategy once on the untouched holdout before that date.
    This produces `REPORT.md`, the charts in `results/` and
    `results/summary.json`.
 3. Replays the bot's exact live code over the last 6 months of real data and
@@ -364,6 +377,7 @@ days as a workflow artifact.
 python -m goldlab fetch-twelvedata --start 2024-10-01 --end 2026-10-01  # needs TWELVEDATA_API_KEY; or put your own CSV in data/
 python -m goldlab check-data --minutes 15
 python -m goldlab run --minutes 15    # -> REPORT.md, results/*.png, results/summary.json
+                                      #    bars before 2024-10-21 = holdout (--holdout-end none to disable)
 python -m goldlab smoke               # pipeline check on synthetic data (meaningless numbers)
 ```
 
@@ -387,7 +401,7 @@ goldlab/
   sessions.py    Asia / London / New York labels (DST-aware), trading day = 17:00 NY rollover
   engine.py      bar-by-bar backtester with conservative fill rules and risk rules
   features.py    look-ahead-free daily ATR, bar ATR, local-time helpers
-  strategies/    london_breakout.py, ny_momentum.py, vwap_fade.py
+  strategies/    london_breakout.py, ny_momentum.py, vwap_fade.py, regime_switch.py
   validation.py  IS/OOS split, walk-forward, parameter grid + sensitivity
   metrics.py     win rate, PF, expectancy (R), t-stat, max DD, losing streak, monthly returns
   plots.py       equity + drawdown, sensitivity heatmaps

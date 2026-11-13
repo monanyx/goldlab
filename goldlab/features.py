@@ -31,6 +31,24 @@ def daily_trend(df: pd.DataFrame, n: int = 20) -> np.ndarray:
     return df["trade_date"].map(sign).fillna(0.0).to_numpy(float)
 
 
+def daily_trend_distance(df: pd.DataFrame, n: int = 20) -> np.ndarray:
+    """Previous trade day's close minus the average of the previous `n` daily closes
+    (including that day), in price units; NaN while there is not enough history.
+
+    Known at the start of each trade date, so it is free of look-ahead. Its sign is
+    `daily_trend`.
+    """
+    closes = df.groupby("trade_date")["close"].last()
+    dist = (closes - closes.rolling(n, min_periods=n).mean()).shift(1)
+    return df["trade_date"].map(dist).to_numpy(float)
+
+
+def prev_day_range(df: pd.DataFrame) -> np.ndarray:
+    """High minus low of the previous trade date (NaN on the first day)."""
+    rng = df.groupby("trade_date").agg(hi=("high", "max"), lo=("low", "min"))
+    return df["trade_date"].map((rng["hi"] - rng["lo"]).shift(1)).to_numpy(float)
+
+
 def bar_atr(df: pd.DataFrame, n: int = 14) -> np.ndarray:
     """Rolling mean true range over the last `n` bars, inclusive of the current bar."""
     prev_close = df["close"].shift(1)
