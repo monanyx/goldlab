@@ -1,15 +1,15 @@
 {
-  "source_rows": 60991,
-  "rows_after_clean": 49862,
+  "source_rows": 108069,
+  "rows_after_clean": 96748,
   "duplicates_removed": 0,
   "invalid_rows_removed": 0,
-  "weekend_rows_removed": 11129,
+  "weekend_rows_removed": 11321,
   "spikes_removed": 0,
   "ohlc_fixed": 0,
   "bar_minutes": 15,
-  "first_bar": "2024-10-21 00:00:00+00:00",
-  "last_bar": "2026-11-04 00:00:00+00:00",
-  "intraday_gaps": 21,
+  "first_bar": "2022-10-30 22:00:00+00:00",
+  "last_bar": "2026-11-13 00:00:00+00:00",
+  "intraday_gaps": 46,
   "largest_gaps": [
     {
       "bar_after_gap": "2024-12-25 23:00:00+00:00",
@@ -20,36 +20,36 @@
       "minutes": 1515
     },
     {
-      "bar_after_gap": "2024-11-28 23:00:00+00:00",
+      "bar_after_gap": "2022-11-18 03:00:00+00:00",
+      "minutes": 315
+    },
+    {
+      "bar_after_gap": "2024-01-05 19:15:00+00:00",
+      "minutes": 255
+    },
+    {
+      "bar_after_gap": "2023-02-20 23:00:00+00:00",
       "minutes": 225
     },
     {
-      "bar_after_gap": "2025-01-20 23:00:00+00:00",
+      "bar_after_gap": "2022-11-24 23:00:00+00:00",
       "minutes": 225
     },
     {
-      "bar_after_gap": "2025-02-17 23:00:00+00:00",
+      "bar_after_gap": "2023-09-04 22:00:00+00:00",
       "minutes": 225
     },
     {
-      "bar_after_gap": "2025-04-18 03:30:00+00:00",
-      "minutes": 135
+      "bar_after_gap": "2023-11-23 23:00:00+00:00",
+      "minutes": 225
     },
     {
-      "bar_after_gap": "2025-04-18 11:15:00+00:00",
-      "minutes": 135
+      "bar_after_gap": "2024-02-19 23:00:00+00:00",
+      "minutes": 225
     },
     {
-      "bar_after_gap": "2025-04-18 19:00:00+00:00",
-      "minutes": 135
-    },
-    {
-      "bar_after_gap": "2025-04-18 00:00:00+00:00",
-      "minutes": 75
-    },
-    {
-      "bar_after_gap": "2025-04-18 08:00:00+00:00",
-      "minutes": 75
+      "bar_after_gap": "2024-05-27 22:00:00+00:00",
+      "minutes": 225
     }
   ]
 }
