@@ -10,21 +10,26 @@ This repo has two parts:
   tests and the `REPORT.md` verdict. The bot runs the lab's engine, so both
   make the same decisions.
 
-> **No strategy has a proven edge.** [`REPORT.md`](REPORT.md) tested all three
-> strategies on 2 years of real 15-minute XAU/USD data (Sept 2024 to Oct 2026),
-> after costs:
+> **No strategy has a proven edge.** [`REPORT.md`](REPORT.md) tested 8
+> strategies on 4 years of real 15-minute XAU/USD data, after costs: a
+> development window (Oct 2024 to Nov 2026) and an untouched holdout
+> (Oct 2022 to Oct 2024) that no earlier run had seen.
 >
-> - **London breakout: inconclusive.** Slightly positive overall (+0.04R a
->   trade, +7.6%), but all of that came in 2026. It lost in 2024–25, and only
->   42% of nearby parameter settings were profitable.
-> - **NY momentum: in-sample only.** Tuned parameters looked good on the past,
->   then lost on new data. A clear case of overfitting.
-> - **VWAP fade: no edge.** It loses money with every parameter setting tested.
+> - **London breakout (what the bot trades): inconclusive, and it lost on the
+>   holdout.** +0.07R a trade (+14.6%) on 2024–26, with nearly all of it in
+>   2026. On the untouched 2022–24 data the same rules lost: 272 trades,
+>   −0.10R a trade, −24.9%.
+> - **Regime switch (round 2): no edge, not adopted.** Its range-day fades won
+>   only 16–19% of the time; none of its 81 parameter settings was profitable;
+>   it also lost on the holdout. The pre-registered stopping rule applies: the
+>   strategy search ends here ([docs/regime-switch-test.md](docs/regime-switch-test.md)).
+> - **Every strategy lost money on the holdout**, including the four round-1
+>   London-breakout variants, NY momentum and VWAP fade.
 >
 > The bot therefore stays on the London breakout, the required fallback. Treat
 > its signals as an unproven experiment: use signal or paper mode only. The
 > bot's live code reproduced the backtest exactly on the last 6 months of real
-> data (51 of 51 trades, [`results/replay_check.md`](results/replay_check.md)).
+> data (49 of 49 trades, [`results/replay_check.md`](results/replay_check.md)).
 
 ---
 

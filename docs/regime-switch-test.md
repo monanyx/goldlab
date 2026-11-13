@@ -110,3 +110,27 @@ These do not change any verdict:
   the first look at how the bot's current strategy behaves on data it has never
   seen. Round-1 verdicts keep their round-1 rules.
 - The regime switch's trades split by day type (trend breakout vs range fade).
+
+---
+
+## Result (added 2026-11-13, after the run; nothing above was changed)
+
+Research run 43377753365, 4 years of Twelve Data XAU/USD 15-minute bars
+(2022-10-30 → 2026-11-13). Full numbers in [REPORT.md](../REPORT.md).
+
+**Not adopted.** It failed the development window and the holdout:
+
+| Check | Result |
+|---|---|
+| Development window verdict | NO EDGE: −0.245R a trade on default settings, 0% of the 81 grid settings profitable |
+| Walk-forward vs baseline | −0.026R vs London breakout's +0.054R |
+| Holdout (23.7 months, 131 trades) | −0.092R a trade, t-stat −1.03, −0.149R at 2× costs |
+
+By day type (development window, default settings): range-day fades lost
+heavily (46 trades, 16–19% win rate, about −0.5R a trade); trend-day
+breakouts were roughly break-even (51 trades, −0.04R long, +0.06R short).
+
+Per the stopping rule, the strategy search ends here. The bot stays on the
+London breakout in paper mode. Information only: the London breakout itself
+lost on the holdout (272 trades, −0.10R a trade, −24.9%), as did every other
+strategy.
