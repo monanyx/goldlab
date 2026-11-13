@@ -1,30 +1,79 @@
-# goldlab + goldbot
+# goldlab
 
-This repo has two parts:
+**An automated research lab and live paper-trading bot for spot gold (XAU/USD),
+built to answer one question honestly: can simple intraday rules make money
+after trading costs?**
 
-- **goldbot** is an XAUUSD (spot gold) trading bot. It ships in **signal mode**
-  (Telegram alerts only). It can also run in **paper mode** (virtual trades
-  with P&L tracking) and in **live mode**, which places orders on a
-  **Capital.com demo account only**.
+**[See the results page →](https://monanyx.github.io/goldlab/)**
+
+I tested 8 strategies on 4 years of 15-minute price data. Every pass/fail rule
+was committed to git *before* the results existed, and the final test used two
+years of data no earlier run had touched. **None of the 8 made money on that
+untouched data**, including the strategy the bot was trading. The lab caught it
+while the bot was still in paper mode, so no real money was at risk.
+
+| | Oct 2024 – Nov 2026 | Untouched holdout, Oct 2022 – Oct 2024 |
+|---|---:|---:|
+| London breakout (the bot's strategy) | +0.07R a trade, +14.6% | −0.10R a trade, −24.9% |
+| Regime switch (round 2) | −0.25R a trade | −0.09R a trade |
+| Strategies profitable | 5 of 8 | **0 of 8** |
+
+*R = the amount risked on one trade. Full numbers: [REPORT.md](REPORT.md).*
+
+### What this project demonstrates
+
+- **Research rigour.** A bar-by-bar backtesting engine with no look-ahead and
+  pessimistic fills; in-sample/out-of-sample splits, rolling walk-forward
+  re-tuning, double-cost stress tests and parameter-robustness checks;
+  pre-registered hypotheses ([round 1](docs/improvement-tests.md),
+  [round 2](docs/regime-switch-test.md)) and an untouched holdout.
+- **Production automation.** A scheduled bot on GitHub Actions that keeps its
+  state on a git branch, sends Telegram alerts, accepts `/stop` `/resume`
+  `/status` commands, paper-trades, and has a Capital.com demo-account adapter
+  and a Docker image for running on a server.
+- **Proof that live = backtest.** One engine runs both. A replay test runs the
+  bot's exact live code over real data (fresh process per run, saved state,
+  late and skipped runs) and requires identical trades: 49 of 49 on the last
+  6 months.
+- **Safety by design.** Risk limits live in code and can't be loosened by
+  configuration (1% risk per trade, stop loss on every order, 3% daily loss
+  limit, max 3 trades a day); the broker URL is hard-wired to the demo server;
+  live mode needs two separate switches; there's a kill switch.
+- **Tested.** 127 automated tests run on every pull request.
+
+**Built with:** Python, pandas, NumPy, Matplotlib, pytest, GitHub Actions,
+Docker, Telegram Bot API, Twelve Data API, Capital.com REST API (demo).
+
+### The two parts
+
+- **goldbot** is the trading bot. It ships in **signal mode** (Telegram alerts
+  only). It can also run in **paper mode** (virtual trades with P&L tracking)
+  and in **live mode**, which places orders on a **Capital.com demo account
+  only**.
 - **goldlab** is the research lab: backtests, out-of-sample tests, walk-forward
-  tests and the `REPORT.md` verdict. The bot runs the lab's engine, so both
-  make the same decisions.
+  tests, the untouched holdout and the `REPORT.md` verdict. The bot runs the
+  lab's engine, so both make the same decisions.
 
-> **No strategy has a proven edge.** [`REPORT.md`](REPORT.md) tested all three
-> strategies on 2 years of real 15-minute XAU/USD data (Sept 2024 to Oct 2026),
-> after costs:
+> **No strategy has a proven edge.** [`REPORT.md`](REPORT.md) tested 8
+> strategies on 4 years of real 15-minute XAU/USD data, after costs: a
+> development window (Oct 2024 to Nov 2026) and an untouched holdout
+> (Oct 2022 to Oct 2024) that no earlier run had seen.
 >
-> - **London breakout: inconclusive.** Slightly positive overall (+0.04R a
->   trade, +7.6%), but all of that came in 2026. It lost in 2024–25, and only
->   42% of nearby parameter settings were profitable.
-> - **NY momentum: in-sample only.** Tuned parameters looked good on the past,
->   then lost on new data. A clear case of overfitting.
-> - **VWAP fade: no edge.** It loses money with every parameter setting tested.
+> - **London breakout (what the bot trades): inconclusive, and it lost on the
+>   holdout.** +0.07R a trade (+14.6%) on 2024–26, with nearly all of it in
+>   2026. On the untouched 2022–24 data the same rules lost: 272 trades,
+>   −0.10R a trade, −24.9%.
+> - **Regime switch (round 2): no edge, not adopted.** Its range-day fades won
+>   only 16–19% of the time; none of its 81 parameter settings was profitable;
+>   it also lost on the holdout. The pre-registered stopping rule applies: the
+>   strategy search ends here ([docs/regime-switch-test.md](docs/regime-switch-test.md)).
+> - **Every strategy lost money on the holdout**, including the four round-1
+>   London-breakout variants, NY momentum and VWAP fade.
 >
 > The bot therefore stays on the London breakout, the required fallback. Treat
 > its signals as an unproven experiment: use signal or paper mode only. The
 > bot's live code reproduced the backtest exactly on the last 6 months of real
-> data (51 of 51 trades, [`results/replay_check.md`](results/replay_check.md)).
+> data (49 of 49 trades, [`results/replay_check.md`](results/replay_check.md)).
 
 ---
 
@@ -239,7 +288,7 @@ on real data once you've added a CSV to `data/`.
 verdict is `EDGE`. Otherwise it falls back to `london_breakout`.
 
 You can also name a built-in strategy (`london_breakout`, `ny_momentum`,
-`vwap_fade`) or any class with `signals(df) -> StrategySignals`, for example
+`vwap_fade`, `regime_switch`, or a round-1 variant) or any class with `signals(df) -> StrategySignals`, for example
 `strategy = "mypkg.mystrat:MyStrategy"`. Parameters go in
 `strategy_params = { ... }`.
 
@@ -338,14 +387,27 @@ confirmation, early exit, tight ranges) are tested alongside the original
 strategies. The hypotheses and the rule for adopting a variant were fixed before
 the results existed: see [docs/improvement-tests.md](docs/improvement-tests.md).
 
+**Round 2: the regime switch** (`regime_switch`). At the London open it reads
+the day from data known at that moment (trend distance from the 20-day average,
+yesterday's range, the Asia range), labels it a trend, range or chaos day, and
+trades accordingly: a breakout with the trend, a fade of a false break, or
+nothing. Its rules, grid, adoption rule and stopping rule were committed before
+it ran on real data: see [docs/regime-switch-test.md](docs/regime-switch-test.md).
+Because its rules were chosen after seeing round 1, it must also pass an
+**untouched holdout**: every bar before 2024-10-21, which no earlier run used.
+Its verdict only says `EDGE` (and the bot's `auto` only switches to it) if it
+passes the development window *and* the holdout.
+
 ### Run it on GitHub (easiest)
 
 Go to **Actions → research → Run workflow**. In about 10 minutes it:
 
-1. Downloads 2 years of XAU/USD history from Twelve Data, the same feed the
+1. Downloads 4 years of XAU/USD history from Twelve Data, the same feed the
    bot trades on, using your `TWELVEDATA_API_KEY` secret. If that fails it
    tries Dukascopy, which is free but often rate-limits GitHub's servers.
-2. Runs the full research on 15-minute bars, the same timeframe the bot uses.
+2. Runs the full research on 15-minute bars, the same timeframe the bot uses,
+   on the development window (2024-10-21 onwards, as in round 1), then runs
+   every strategy once on the untouched holdout before that date.
    This produces `REPORT.md`, the charts in `results/` and
    `results/summary.json`.
 3. Replays the bot's exact live code over the last 6 months of real data and
@@ -364,6 +426,7 @@ days as a workflow artifact.
 python -m goldlab fetch-twelvedata --start 2024-10-01 --end 2026-10-01  # needs TWELVEDATA_API_KEY; or put your own CSV in data/
 python -m goldlab check-data --minutes 15
 python -m goldlab run --minutes 15    # -> REPORT.md, results/*.png, results/summary.json
+                                      #    bars before 2024-10-21 = holdout (--holdout-end none to disable)
 python -m goldlab smoke               # pipeline check on synthetic data (meaningless numbers)
 ```
 
@@ -387,7 +450,7 @@ goldlab/
   sessions.py    Asia / London / New York labels (DST-aware), trading day = 17:00 NY rollover
   engine.py      bar-by-bar backtester with conservative fill rules and risk rules
   features.py    look-ahead-free daily ATR, bar ATR, local-time helpers
-  strategies/    london_breakout.py, ny_momentum.py, vwap_fade.py
+  strategies/    london_breakout.py, ny_momentum.py, vwap_fade.py, regime_switch.py
   validation.py  IS/OOS split, walk-forward, parameter grid + sensitivity
   metrics.py     win rate, PF, expectancy (R), t-stat, max DD, losing streak, monthly returns
   plots.py       equity + drawdown, sensitivity heatmaps

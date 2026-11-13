@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>goldlab: testing gold trading strategies honestly</title>
+<meta name="description" content="An automated research lab and live paper-trading bot for spot gold. Eight strategies, four years of data, rules fixed before the results. None survived unseen data.">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #6f6d68;
+  --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10); --wash: rgba(11,11,11,0.035);
+  --series-1: #2a78d6; --series-2: #eb6834; --accent: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.04);
+    --series-1: #3987e5; --series-2: #d95926; --accent: #6da7ec;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #9a988f;
+  --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --wash: rgba(255,255,255,0.04);
+  --series-1: #3987e5; --series-2: #d95926; --accent: #6da7ec;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 860px; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+a { color: var(--accent); }
+h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.15; margin: .4rem 0 1rem; letter-spacing: -0.02em; }
+h2 { font-size: 1.35rem; margin: 3.2rem 0 .4rem; letter-spacing: -0.01em; }
+h3 { font-size: 1rem; margin: 0 0 .25rem; }
+p { margin: .5rem 0; }
+.eyebrow { color: var(--ink-2); font-size: .9rem; }
+.lead { font-size: 1.12rem; color: var(--ink-2); max-width: 44rem; }
+.sub { color: var(--ink-2); margin-top: 0; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 1.25rem; margin-top: 1rem; }
+.hero { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; }
+.hero-num { font-size: 3.6rem; font-weight: 650; line-height: 1; }
+.hero-text { max-width: 26rem; color: var(--ink-2); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: .75rem; margin-top: 1rem; }
+.tile { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: .9rem 1rem; }
+.tile-label { font-size: .85rem; color: var(--ink-2); }
+.tile-value { font-size: 1.6rem; font-weight: 600; }
+.tile-note { font-size: .8rem; color: var(--muted); }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .75rem; counter-reset: step; margin-top: 1rem; }
+.step { background: var(--surface); border: 1px solid var(--ring); border-radius: 12px; padding: 1rem; counter-increment: step; }
+.step::before { content: counter(step); display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem;
+  border-radius: 50%; background: var(--wash); border: 1px solid var(--ring); font-size: .85rem; font-weight: 600; margin-bottom: .5rem; }
+.step p { font-size: .92rem; color: var(--ink-2); margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font-size: .85rem; color: var(--ink-2); margin: .25rem 0 .75rem; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .4rem; vertical-align: -1px; }
+.bars { display: grid; gap: .55rem; }
+.bar-row { display: grid; grid-template-columns: var(--label-w) 1fr; gap: .75rem; align-items: center; }
+.bar-label { font-size: .88rem; line-height: 1.25; }
+.bar-track { position: relative; display: grid; gap: 2px; padding: 2px 0;
+  background: linear-gradient(var(--axis), var(--axis)) 50% 0 / 1px 100% no-repeat; }
+.bar-line { position: relative; height: 12px; }
+.bar { position: absolute; top: 0; height: 12px; width: var(--w); background: var(--c); outline-offset: 2px; cursor: default; }
+.bar.pos { left: 50%; border-radius: 0 4px 4px 0; }
+.bar.neg { right: 50%; border-radius: 4px 0 0 4px; }
+.bar:hover, .bar:focus { filter: brightness(1.15); outline: 2px solid var(--ring); }
+.bar-val { position: absolute; top: -3px; font-size: .74rem; color: var(--ink-2); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bar-val.pos { left: calc(50% + var(--w) + 6px); }
+.bar-val.neg { right: calc(50% + var(--w) + 6px); }
+.bar-row.axis { margin-top: .1rem; }
+.bar-axis { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+details { margin-top: .9rem; font-size: .9rem; }
+summary { cursor: pointer; color: var(--ink-2); }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; margin-top: .5rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { color: var(--ink-2); font-weight: 600; }
+#curve { position: relative; margin-top: .5rem; }
+#curve svg { display: block; width: 100%; overflow: visible; }
+#curve text { fill: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+#curve .band-label { fill: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--ring);
+  border-radius: 8px; padding: .45rem .6rem; font-size: .82rem; box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  white-space: nowrap; opacity: 0; transition: opacity .1s; z-index: 5; }
+.tip strong { display: block; font-size: .95rem; }
+.tip span { color: var(--ink-2); }
+ul.learned { padding-left: 1.2rem; }
+ul.learned li { margin: .5rem 0; }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+.chips span { border: 1px solid var(--ring); background: var(--surface); border-radius: 999px; padding: .2rem .7rem; font-size: .85rem; }
+footer { margin-top: 3.5rem; padding-top: 1.25rem; border-top: 1px solid var(--grid); font-size: .85rem; color: var(--ink-2); }
+footer a { margin-right: 1rem; }
+@media (max-width: 560px) {
+  main { padding-top: 2rem; }
+  .bar-row { grid-template-columns: 1fr; gap: .2rem; }
+  .bar-axis { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<main>
+<div class="eyebrow">Research project · spot gold (XAU/USD) · by monanyx</div>
+<h1>I built a gold-trading bot, then tried hard to prove it wrong.</h1>
+<p class="lead">goldlab is an automated research lab and a live paper-trading bot. Every strategy had to pass rules I wrote down before seeing any results, including a test on two years of price data that no earlier run had touched. None passed, and the lab caught that before any real money was at risk.</p>
+
+<div class="card hero">
+  <div class="hero-num">0 of 8</div>
+  <div class="hero-text">strategies made money on the untouched holdout: two years of data (Oct 2022 – Oct 2024) used once, at the end, with no tuning.</div>
+</div>
+<div class="tiles">
+<div class="tile"><div class="tile-label">Strategies tested</div><div class="tile-value">8</div></div>
+<div class="tile"><div class="tile-label">Price history</div><div class="tile-value">4 years</div><div class="tile-note">96,748 fifteen-minute bars</div></div>
+<div class="tile"><div class="tile-label">Live bot vs backtest</div><div class="tile-value">49/49</div><div class="tile-note">trades identical</div></div>
+<div class="tile"><div class="tile-label">Automated tests</div><div class="tile-value">127</div></div>
+</div>
+
+<h2>How every strategy was tested</h2>
+<p class="sub">Backtests are easy to fool. Each step below exists to catch a different way of fooling yourself.</p>
+<div class="steps">
+  <div class="step"><h3>Fix the rules first</h3><p>Hypotheses, parameter grids and the pass/fail rule were committed to git before any real-data run (<a href="https://github.com/monanyx/goldlab/blob/main/docs/improvement-tests.md">round 1</a>, <a href="https://github.com/monanyx/goldlab/blob/main/docs/regime-switch-test.md">round 2</a>).</p></div>
+  <div class="step"><h3>Stress the recent data</h3><p>Oct 2024 – Nov 2026: in-sample vs out-of-sample, rolling walk-forward re-tuning, double trading costs, and every nearby parameter setting.</p></div>
+  <div class="step"><h3>Untouched holdout</h3><p>Two older years no earlier run had used. Default settings, run once. No second chances.</p></div>
+  <div class="step"><h3>Prove the bot = the backtest</h3><p>The live bot's exact code is replayed over real data (fresh process per run, saved state, late and skipped runs) and must produce identical trades.</p></div>
+</div>
+
+<h2>Recent results didn't hold up on older data</h2>
+<p class="sub">Average profit per trade, in R (1R = the amount risked on one trade), after spread and slippage. Default settings.</p>
+<div class="card">
+  <div class="legend"><span><i style="background:var(--series-1)"></i>Oct 2024 – Nov 2026</span><span><i style="background:var(--series-2)"></i>Untouched holdout, Oct 2022 – Oct 2024</span></div>
+  <div class="bars" style="--label-w:minmax(9rem, 34%)">
+<div class="bar-row">
+<div class="bar-label">London breakout</div><div class="bar-track">
+<div class="bar-line"><span class="bar pos" tabindex="0" style="--w:8.55%;--c:var(--series-1)" data-tip-title="London breakout" data-tip="Oct 2024 – Nov 2026: +0.068R per trade"></span><span class="bar-val pos" style="--w:8.55%">+0.07R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:12.75%;--c:var(--series-2)" data-tip-title="London breakout" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.102R per trade"></span><span class="bar-val neg" style="--w:12.75%">−0.10R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">NY momentum</div><div class="bar-track">
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:10.06%;--c:var(--series-1)" data-tip-title="NY momentum" data-tip="Oct 2024 – Nov 2026: −0.080R per trade"></span><span class="bar-val neg" style="--w:10.06%">−0.08R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:9.73%;--c:var(--series-2)" data-tip-title="NY momentum" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.078R per trade"></span><span class="bar-val neg" style="--w:9.73%">−0.08R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">VWAP fade</div><div class="bar-track">
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:11.73%;--c:var(--series-1)" data-tip-title="VWAP fade" data-tip="Oct 2024 – Nov 2026: −0.094R per trade"></span><span class="bar-val neg" style="--w:11.73%">−0.09R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:14.82%;--c:var(--series-2)" data-tip-title="VWAP fade" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.119R per trade"></span><span class="bar-val neg" style="--w:14.82%">−0.12R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">London breakout + trend filter</div><div class="bar-track">
+<div class="bar-line"><span class="bar pos" tabindex="0" style="--w:11.62%;--c:var(--series-1)" data-tip-title="London breakout + trend filter" data-tip="Oct 2024 – Nov 2026: +0.093R per trade"></span><span class="bar-val pos" style="--w:11.62%">+0.09R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:8.51%;--c:var(--series-2)" data-tip-title="London breakout + trend filter" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.068R per trade"></span><span class="bar-val neg" style="--w:8.51%">−0.07R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">London breakout + close confirmation</div><div class="bar-track">
+<div class="bar-line"><span class="bar pos" tabindex="0" style="--w:0.91%;--c:var(--series-1)" data-tip-title="London breakout + close confirmation" data-tip="Oct 2024 – Nov 2026: +0.007R per trade"></span><span class="bar-val pos" style="--w:0.91%">+0.01R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:9.69%;--c:var(--series-2)" data-tip-title="London breakout + close confirmation" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.077R per trade"></span><span class="bar-val neg" style="--w:9.69%">−0.08R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">London breakout + early exit</div><div class="bar-track">
+<div class="bar-line"><span class="bar pos" tabindex="0" style="--w:0.83%;--c:var(--series-1)" data-tip-title="London breakout + early exit" data-tip="Oct 2024 – Nov 2026: +0.007R per trade"></span><span class="bar-val pos" style="--w:0.83%">+0.01R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:9.73%;--c:var(--series-2)" data-tip-title="London breakout + early exit" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.078R per trade"></span><span class="bar-val neg" style="--w:9.73%">−0.08R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">London breakout + tight range</div><div class="bar-track">
+<div class="bar-line"><span class="bar pos" tabindex="0" style="--w:10.81%;--c:var(--series-1)" data-tip-title="London breakout + tight range" data-tip="Oct 2024 – Nov 2026: +0.086R per trade"></span><span class="bar-val pos" style="--w:10.81%">+0.09R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:12.70%;--c:var(--series-2)" data-tip-title="London breakout + tight range" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.102R per trade"></span><span class="bar-val neg" style="--w:12.70%">−0.10R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">Regime switch</div><div class="bar-track">
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:30.58%;--c:var(--series-1)" data-tip-title="Regime switch" data-tip="Oct 2024 – Nov 2026: −0.245R per trade"></span><span class="bar-val neg" style="--w:30.58%">−0.24R</span></div>
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:11.55%;--c:var(--series-2)" data-tip-title="Regime switch" data-tip="Untouched holdout, Oct 2022 – Oct 2024: −0.092R per trade"></span><span class="bar-val neg" style="--w:11.55%">−0.09R</span></div>
+</div></div>
+<div class="bar-row axis"><div></div><div class="bar-axis"><span>−0.4R</span><span>0</span><span>+0.4R</span></div></div></div>
+  <details><summary>Show as table</summary><div class="table-wrap"><table><thead><tr><th>Strategy</th><th>Trades (2024–26)</th><th>Exp. 2024–26</th><th>Trades (holdout)</th><th>Exp. holdout</th><th>Return holdout</th></tr></thead><tbody><tr><td>London breakout</td><td>211</td><td>+0.068R</td><td>272</td><td>−0.102R</td><td>−24.9%</td></tr><tr><td>NY momentum</td><td>116</td><td>−0.080R</td><td>179</td><td>−0.078R</td><td>−14.0%</td></tr><tr><td>VWAP fade</td><td>261</td><td>−0.094R</td><td>309</td><td>−0.119R</td><td>−31.9%</td></tr><tr><td>London breakout + trend filter</td><td>104</td><td>+0.093R</td><td>138</td><td>−0.068R</td><td>−9.5%</td></tr><tr><td>London breakout + close confirmation</td><td>163</td><td>+0.007R</td><td>214</td><td>−0.077R</td><td>−15.9%</td></tr><tr><td>London breakout + early exit</td><td>211</td><td>+0.007R</td><td>272</td><td>−0.078R</td><td>−19.3%</td></tr><tr><td>London breakout + tight range</td><td>156</td><td>+0.086R</td><td>233</td><td>−0.102R</td><td>−21.8%</td></tr><tr><td>Regime switch</td><td>97</td><td>−0.245R</td><td>131</td><td>−0.092R</td><td>−12.0%</td></tr></tbody></table></div></details>
+</div>
+
+<h2>The bot's own strategy: London breakout</h2>
+<p class="sub">Cumulative result of every trade, in R. On 2024–26 it made +0.07R a trade (+14.6%), which looked promising. On the untouched holdout the same rules lost: 272 trades, −0.10R a trade, −24.9%.</p>
+<div class="card">
+  <div id="curve" role="img" aria-label="Cumulative R of the London breakout across the holdout and the development window"><noscript>Chart needs JavaScript; see the table below.</noscript></div>
+  <details><summary>Show as table</summary><div class="table-wrap"><table><thead><tr><th>Period</th><th>Trades</th><th>Total (R)</th><th>Per trade</th></tr></thead><tbody><tr><td>Untouched holdout</td><td>272</td><td>−27.8R</td><td>−0.102R</td></tr><tr><td>Oct 2024 – Nov 2026</td><td>211</td><td>+14.4R</td><td>+0.068R</td></tr></tbody></table></div></details>
+</div>
+
+<h2>Round 2: a bot that reads the market first</h2>
+<p class="sub">At the London open the regime switch labels the day (trend, range or chaos) from data known at that moment, then trades a breakout with the trend, fades a false break, or stays out.</p>
+<div class="card">
+  <p>Result: <strong>not adopted</strong> (2 of 7 pre-registered checks passed). Range-day fades were the problem: price that faked out of the Asia range usually kept going.</p>
+  <div class="bars" style="--label-w:minmax(9rem, 40%)">
+<div class="bar-row">
+<div class="bar-label">Trend day, long breakout · 38 trades</div><div class="bar-track">
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:2.57%;--c:var(--series-1)" data-tip-title="Trend day, long breakout · 38 trades" data-tip="−0.041R per trade"></span><span class="bar-val neg" style="--w:2.57%">−0.04R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">Trend day, short breakout · 13 trades</div><div class="bar-track">
+<div class="bar-line"><span class="bar pos" tabindex="0" style="--w:3.84%;--c:var(--series-1)" data-tip-title="Trend day, short breakout · 13 trades" data-tip="+0.061R per trade"></span><span class="bar-val pos" style="--w:3.84%">+0.06R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">Range day, fade (long) · 25 trades</div><div class="bar-track">
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:29.82%;--c:var(--series-1)" data-tip-title="Range day, fade (long) · 25 trades" data-tip="−0.477R per trade"></span><span class="bar-val neg" style="--w:29.82%">−0.48R</span></div>
+</div></div>
+<div class="bar-row">
+<div class="bar-label">Range day, fade (short) · 21 trades</div><div class="bar-track">
+<div class="bar-line"><span class="bar neg" tabindex="0" style="--w:32.84%;--c:var(--series-1)" data-tip-title="Range day, fade (short) · 21 trades" data-tip="−0.526R per trade"></span><span class="bar-val neg" style="--w:32.84%">−0.53R</span></div>
+</div></div>
+<div class="bar-row axis"><div></div><div class="bar-axis"><span>−0.8R</span><span>0</span><span>+0.8R</span></div></div></div>
+  <details><summary>Show as table</summary><div class="table-wrap"><table><thead><tr><th>Setup</th><th>Trades</th><th>Win rate</th><th>Exp. per trade</th></tr></thead><tbody><tr><td>Trend day, long breakout</td><td>38</td><td>47%</td><td>−0.041R</td></tr><tr><td>Trend day, short breakout</td><td>13</td><td>62%</td><td>+0.061R</td></tr><tr><td>Range day, fade (long)</td><td>25</td><td>16%</td><td>−0.477R</td></tr><tr><td>Range day, fade (short)</td><td>21</td><td>19%</td><td>−0.526R</td></tr></tbody></table></div></details>
+</div>
+
+<h2>The live bot</h2>
+<div class="card">
+  <p>goldbot runs on GitHub Actions throughout the London and New York sessions. It pulls live prices, runs the same engine as the backtests, sends Telegram alerts and paper-trades. Risk rules are enforced in code and can't be loosened by configuration:</p>
+  <ul class="learned">
+    <li>every order has a stop loss; 1% risk per trade, sized down, never up</li>
+    <li>3% daily loss limit, at most 3 trades a day, no new trades after 20:00 Vienna time</li>
+    <li>kill switch from Telegram (<code>/stop</code>), a GitHub variable or the config file</li>
+    <li>a broker adapter that can only reach a demo account</li>
+  </ul>
+</div>
+
+<h2>What I took from it</h2>
+<ul class="learned">
+  <li><strong>A good-looking backtest proves very little.</strong> London breakout looked fine on 2024–26 and lost on 2022–24. Only data you haven't seen can tell those apart.</li>
+  <li><strong>Deciding the rules first is what makes a "no" trustworthy.</strong> Because the pass/fail rules were committed beforehand, the negative result can't be argued away, and the bot stays in paper mode.</li>
+  <li><strong>The backtest and the live system have to be the same code.</strong> One engine runs both, and a replay test proves they agree trade for trade.</li>
+</ul>
+
+<h2>Built with</h2>
+<div class="chips"><span>Python</span><span>pandas</span><span>NumPy</span><span>Matplotlib</span><span>pytest</span><span>GitHub Actions</span><span>Docker</span><span>Telegram Bot API</span><span>Twelve Data API</span><span>Capital.com REST API (demo)</span></div>
+
+<footer>
+  <p><a href="https://github.com/monanyx/goldlab">Source on GitHub</a><a href="https://github.com/monanyx/goldlab/blob/main/REPORT.md">Full research report</a><a href="https://github.com/monanyx/goldlab/blob/main/results/replay_check.md">Replay check</a></p>
+  <p>Data: Twelve Data XAU/USD 15-minute bars, 2022-10-30 to 2026-11-13. Page generated from the research results on 13 Nov 2026. Not financial advice: no strategy here has a proven edge.</p>
+</footer>
+</main>
+<div class="tip" id="tip" role="tooltip"><strong></strong><span></span></div>
+<script type="application/json" id="page-data">{"curve": [{"t": "2022-11-09", "p": "holdout", "c": -1.0}, {"t": "2022-11-11", "p": "holdout", "c": -1.142}, {"t": "2022-11-14", "p": "holdout", "c": -2.142}, {"t": "2022-11-16", "p": "holdout", "c": -2.432}, {"t": "2022-11-21", "p": "holdout", "c": -2.156}, {"t": "2022-11-22", "p": "holdout", "c": -2.756}, {"t": "2022-11-25", "p": "holdout", "c": -2.794}, {"t": "2022-11-28", "p": "holdout", "c": -3.794}, {"t": "2022-11-29", "p": "holdout", "c": -3.883}, {"t": "2022-11-30", "p": "holdout", "c": -4.431}, {"t": "2022-12-05", "p": "holdout", "c": -3.008}, {"t": "2022-12-16", "p": "holdout", "c": -4.008}, {"t": "2022-12-19", "p": "holdout", "c": -5.008}, {"t": "2022-12-20", "p": "holdout", "c": -3.59}, {"t": "2022-12-27", "p": "holdout", "c": -2.205}, {"t": "2022-12-28", "p": "holdout", "c": -1.437}, {"t": "2022-12-29", "p": "holdout", "c": -2.437}, {"t": "2022-12-30", "p": "holdout", "c": -3.437}, {"t": "2023-01-05", "p": "holdout", "c": -2.022}, {"t": "2023-01-10", "p": "holdout", "c": -2.221}, {"t": "2023-01-11", "p": "holdout", "c": -3.221}, {"t": "2023-01-13", "p": "holdout", "c": -2.147}, {"t": "2023-01-16", "p": "holdout", "c": -2.396}, {"t": "2023-01-17", "p": "holdout", "c": -2.814}, {"t": "2023-01-18", "p": "holdout", "c": -2.789}, {"t": "2023-01-19", "p": "holdout", "c": -2.521}, {"t": "2023-01-20", "p": "holdout", "c": -3.521}, {"t": "2023-01-25", "p": "holdout", "c": -4.093}, {"t": "2023-01-26", "p": "holdout", "c": -3.169}, {"t": "2023-01-30", "p": "holdout", "c": -3.488}, {"t": "2023-01-31", "p": "holdout", "c": -4.488}, {"t": "2023-02-06", "p": "holdout", "c": -5.488}, {"t": "2023-02-09", "p": "holdout", "c": -6.307}, {"t": "2023-02-10", "p": "holdout", "c": -6.875}, {"t": "2023-02-13", "p": "holdout", "c": -6.889}, {"t": "2023-02-16", "p": "holdout", "c": -7.889}, {"t": "2023-02-17", "p": "holdout", "c": -8.889}, {"t": "2023-02-21", "p": "holdout", "c": -9.889}, {"t": "2023-02-22", "p": "holdout", "c": -10.889}, {"t": "2023-02-24", "p": "holdout", "c": -9.533}, {"t": "2023-02-28", "p": "holdout", "c": -10.743}, {"t": "2023-03-01", "p": "holdout", "c": -10.492}, {"t": "2023-03-03", "p": "holdout", "c": -10.67}, {"t": "2023-03-06", "p": "holdout", "c": -10.848}, {"t": "2023-03-07", "p": "holdout", "c": -9.47}, {"t": "2023-03-09", "p": "holdout", "c": -8.151}, {"t": "2023-03-10", "p": "holdout", "c": -6.779}, {"t": "2023-03-15", "p": "holdout", "c": -7.779}, {"t": "2023-03-21", "p": "holdout", "c": -6.343}, {"t": "2023-03-24", "p": "holdout", "c": -7.343}, {"t": "2023-03-27", "p": "holdout", "c": -6.63}, {"t": "2023-03-28", "p": "holdout", "c": -7.63}, {"t": "2023-03-30", "p": "holdout", "c": -7.611}, {"t": "2023-03-31", "p": "holdout", "c": -8.611}, {"t": "2023-04-03", "p": "holdout", "c": -7.478}, {"t": "2023-04-05", "p": "holdout", "c": -8.478}, {"t": "2023-04-11", "p": "holdout", "c": -8.561}, {"t": "2023-04-13", "p": "holdout", "c": -7.174}, {"t": "2023-04-14", "p": "holdout", "c": -5.777}, {"t": "2023-04-17", "p": "holdout", "c": -6.777}, {"t": "2023-04-18", "p": "holdout", "c": -7.777}, {"t": "2023-04-19", "p": "holdout", "c": -8.108}, {"t": "2023-04-24", "p": "holdout", "c": -9.108}, {"t": "2023-04-25", "p": "holdout", "c": -8.826}, {"t": "2023-04-28", "p": "holdout", "c": -9.826}, {"t": "2023-05-01", "p": "holdout", "c": -10.826}, {"t": "2023-05-03", "p": "holdout", "c": -11.826}, {"t": "2023-05-04", "p": "holdout", "c": -12.826}, {"t": "2023-05-05", "p": "holdout", "c": -11.431}, {"t": "2023-05-11", "p": "holdout", "c": -12.431}, {"t": "2023-05-12", "p": "holdout", "c": -13.431}, {"t": "2023-05-15", "p": "holdout", "c": -13.905}, {"t": "2023-05-17", "p": "holdout", "c": -13.697}, {"t": "2023-05-18", "p": "holdout", "c": -12.298}, {"t": "2023-05-23", "p": "holdout", "c": -13.298}, {"t": "2023-05-25", "p": "holdout", "c": -14.298}, {"t": "2023-05-26", "p": "holdout", "c": -14.99}, {"t": "2023-05-30", "p": "holdout", "c": -14.353}, {"t": "2023-06-01", "p": "holdout", "c": -15.353}, {"t": "2023-06-05", "p": "holdout", "c": -16.528}, {"t": "2023-06-07", "p": "holdout", "c": -17.528}, {"t": "2023-06-08", "p": "holdout", "c": -16.187}, {"t": "2023-06-09", "p": "holdout", "c": -17.187}, {"t": "2023-06-12", "p": "holdout", "c": -18.187}, {"t": "2023-06-13", "p": "holdout", "c": -19.187}, {"t": "2023-06-14", "p": "holdout", "c": -18.383}, {"t": "2023-06-15", "p": "holdout", "c": -19.383}, {"t": "2023-06-16", "p": "holdout", "c": -20.383}, {"t": "2023-06-19", "p": "holdout", "c": -20.518}, {"t": "2023-06-20", "p": "holdout", "c": -21.518}, {"t": "2023-06-22", "p": "holdout", "c": -20.15}, {"t": "2023-06-23", "p": "holdout", "c": -18.766}, {"t": "2023-06-26", "p": "holdout", "c": -19.766}, {"t": "2023-06-28", "p": "holdout", "c": -19.664}, {"t": "2023-06-30", "p": "holdout", "c": -20.664}, {"t": "2023-07-03", "p": "holdout", "c": -21.664}, {"t": "2023-07-04", "p": "holdout", "c": -21.758}, {"t": "2023-07-05", "p": "holdout", "c": -22.758}, {"t": "2023-07-07", "p": "holdout", "c": -21.408}, {"t": "2023-07-14", "p": "holdout", "c": -22.051}, {"t": "2023-07-17", "p": "holdout", "c": -23.051}, {"t": "2023-07-18", "p": "holdout", "c": -21.676}, {"t": "2023-07-19", "p": "holdout", "c": -22.676}, {"t": "2023-07-21", "p": "holdout", "c": -21.654}, {"t": "2023-07-24", "p": "holdout", "c": -22.654}, {"t": "2023-07-26", "p": "holdout", "c": -22.98}, {"t": "2023-07-31", "p": "holdout", "c": -23.98}, {"t": "2023-08-01", "p": "holdout", "c": -23.215}, {"t": "2023-08-03", "p": "holdout", "c": -23.704}, {"t": "2023-08-07", "p": "holdout", "c": -23.688}, {"t": "2023-08-10", "p": "holdout", "c": -22.39}, {"t": "2023-08-11", "p": "holdout", "c": -22.446}, {"t": "2023-08-14", "p": "holdout", "c": -23.446}, {"t": "2023-08-15", "p": "holdout", "c": -24.446}, {"t": "2023-08-22", "p": "holdout", "c": -25.446}, {"t": "2023-08-28", "p": "holdout", "c": -26.446}, {"t": "2023-08-30", "p": "holdout", "c": -25.244}, {"t": "2023-09-05", "p": "holdout", "c": -23.949}, {"t": "2023-09-06", "p": "holdout", "c": -24.949}, {"t": "2023-09-11", "p": "holdout", "c": -25.588}, {"t": "2023-09-14", "p": "holdout", "c": -25.943}, {"t": "2023-09-19", "p": "holdout", "c": -26.088}, {"t": "2023-09-21", "p": "holdout", "c": -25.692}, {"t": "2023-09-22", "p": "holdout", "c": -25.582}, {"t": "2023-09-25", "p": "holdout", "c": -26.582}, {"t": "2023-09-26", "p": "holdout", "c": -26.164}, {"t": "2023-09-27", "p": "holdout", "c": -25.017}, {"t": "2023-09-29", "p": "holdout", "c": -26.017}, {"t": "2023-10-02", "p": "holdout", "c": -25.195}, {"t": "2023-10-03", "p": "holdout", "c": -25.206}, {"t": "2023-10-05", "p": "holdout", "c": -25.149}, {"t": "2023-10-11", "p": "holdout", "c": -23.813}, {"t": "2023-10-13", "p": "holdout", "c": -22.427}, {"t": "2023-10-17", "p": "holdout", "c": -22.167}, {"t": "2023-10-20", "p": "holdout", "c": -21.529}, {"t": "2023-10-23", "p": "holdout", "c": -21.728}, {"t": "2023-10-24", "p": "holdout", "c": -20.334}, {"t": "2023-10-25", "p": "holdout", "c": -21.334}, {"t": "2023-10-26", "p": "holdout", "c": -22.334}, {"t": "2023-10-30", "p": "holdout", "c": -22.84}, {"t": "2023-10-31", "p": "holdout", "c": -23.44}, {"t": "2023-11-02", "p": "holdout", "c": -24.44}, {"t": "2023-11-07", "p": "holdout", "c": -24.235}, {"t": "2023-11-08", "p": "holdout", "c": -22.875}, {"t": "2023-11-09", "p": "holdout", "c": -23.875}, {"t": "2023-11-10", "p": "holdout", "c": -22.5}, {"t": "2023-11-15", "p": "holdout", "c": -23.5}, {"t": "2023-11-17", "p": "holdout", "c": -24.5}, {"t": "2023-11-22", "p": "holdout", "c": -25.5}, {"t": "2023-11-24", "p": "holdout", "c": -24.214}, {"t": "2023-11-29", "p": "holdout", "c": -24.492}, {"t": "2023-11-30", "p": "holdout", "c": -24.231}, {"t": "2023-12-01", "p": "holdout", "c": -25.231}, {"t": "2023-12-05", "p": "holdout", "c": -23.816}, {"t": "2023-12-07", "p": "holdout", "c": -24.264}, {"t": "2023-12-15", "p": "holdout", "c": -25.264}, {"t": "2023-12-18", "p": "holdout", "c": -25.701}, {"t": "2023-12-22", "p": "holdout", "c": -24.318}, {"t": "2023-12-27", "p": "holdout", "c": -25.318}, {"t": "2023-12-28", "p": "holdout", "c": -25.293}, {"t": "2023-12-29", "p": "holdout", "c": -25.34}, {"t": "2024-01-02", "p": "holdout", "c": -26.34}, {"t": "2024-01-03", "p": "holdout", "c": -24.969}, {"t": "2024-01-04", "p": "holdout", "c": -25.969}, {"t": "2024-01-05", "p": "holdout", "c": -24.59}, {"t": "2024-01-09", "p": "holdout", "c": -25.59}, {"t": "2024-01-10", "p": "holdout", "c": -26.212}, {"t": "2024-01-12", "p": "holdout", "c": -24.811}, {"t": "2024-01-16", "p": "holdout", "c": -23.434}, {"t": "2024-01-19", "p": "holdout", "c": -23.765}, {"t": "2024-01-24", "p": "holdout", "c": -24.765}, {"t": "2024-01-25", "p": "holdout", "c": -25.765}, {"t": "2024-01-31", "p": "holdout", "c": -24.413}, {"t": "2024-02-01", "p": "holdout", "c": -25.413}, {"t": "2024-02-05", "p": "holdout", "c": -24.929}, {"t": "2024-02-07", "p": "holdout", "c": -25.929}, {"t": "2024-02-08", "p": "holdout", "c": -26.177}, {"t": "2024-02-09", "p": "holdout", "c": -27.177}, {"t": "2024-02-12", "p": "holdout", "c": -28.177}, {"t": "2024-02-13", "p": "holdout", "c": -29.177}, {"t": "2024-02-14", "p": "holdout", "c": -29.291}, {"t": "2024-02-15", "p": "holdout", "c": -27.971}, {"t": "2024-02-20", "p": "holdout", "c": -27.643}, {"t": "2024-02-22", "p": "holdout", "c": -28.643}, {"t": "2024-02-23", "p": "holdout", "c": -29.643}, {"t": "2024-02-26", "p": "holdout", "c": -30.643}, {"t": "2024-02-27", "p": "holdout", "c": -31.228}, {"t": "2024-02-28", "p": "holdout", "c": -32.228}, {"t": "2024-02-29", "p": "holdout", "c": -33.228}, {"t": "2024-03-01", "p": "holdout", "c": -34.228}, {"t": "2024-03-05", "p": "holdout", "c": -32.829}, {"t": "2024-03-08", "p": "holdout", "c": -31.427}, {"t": "2024-03-13", "p": "holdout", "c": -30.088}, {"t": "2024-03-15", "p": "holdout", "c": -31.088}, {"t": "2024-03-19", "p": "holdout", "c": -31.283}, {"t": "2024-03-20", "p": "holdout", "c": -32.283}, {"t": "2024-03-26", "p": "holdout", "c": -30.909}, {"t": "2024-03-27", "p": "holdout", "c": -29.52}, {"t": "2024-03-28", "p": "holdout", "c": -28.621}, {"t": "2024-04-02", "p": "holdout", "c": -28.685}, {"t": "2024-04-03", "p": "holdout", "c": -29.289}, {"t": "2024-04-04", "p": "holdout", "c": -29.48}, {"t": "2024-04-05", "p": "holdout", "c": -28.436}, {"t": "2024-04-09", "p": "holdout", "c": -28.257}, {"t": "2024-04-11", "p": "holdout", "c": -29.257}, {"t": "2024-04-12", "p": "holdout", "c": -27.999}, {"t": "2024-04-15", "p": "holdout", "c": -28.164}, {"t": "2024-04-16", "p": "holdout", "c": -28.894}, {"t": "2024-04-17", "p": "holdout", "c": -28.796}, {"t": "2024-04-24", "p": "holdout", "c": -29.731}, {"t": "2024-04-25", "p": "holdout", "c": -29.37}, {"t": "2024-04-26", "p": "holdout", "c": -30.002}, {"t": "2024-04-29", "p": "holdout", "c": -30.077}, {"t": "2024-04-30", "p": "holdout", "c": -28.919}, {"t": "2024-05-02", "p": "holdout", "c": -27.484}, {"t": "2024-05-06", "p": "holdout", "c": -27.356}, {"t": "2024-05-07", "p": "holdout", "c": -27.233}, {"t": "2024-05-08", "p": "holdout", "c": -27.879}, {"t": "2024-05-10", "p": "holdout", "c": -28.302}, {"t": "2024-05-13", "p": "holdout", "c": -28.219}, {"t": "2024-05-14", "p": "holdout", "c": -27.872}, {"t": "2024-05-15", "p": "holdout", "c": -26.503}, {"t": "2024-05-16", "p": "holdout", "c": -25.643}, {"t": "2024-05-24", "p": "holdout", "c": -25.841}, {"t": "2024-05-29", "p": "holdout", "c": -25.367}, {"t": "2024-06-04", "p": "holdout", "c": -23.959}, {"t": "2024-06-07", "p": "holdout", "c": -22.512}, {"t": "2024-06-14", "p": "holdout", "c": -21.092}, {"t": "2024-06-18", "p": "holdout", "c": -22.092}, {"t": "2024-06-21", "p": "holdout", "c": -23.092}, {"t": "2024-06-24", "p": "holdout", "c": -22.981}, {"t": "2024-06-25", "p": "holdout", "c": -23.981}, {"t": "2024-06-27", "p": "holdout", "c": -22.6}, {"t": "2024-06-28", "p": "holdout", "c": -22.93}, {"t": "2024-07-02", "p": "holdout", "c": -23.93}, {"t": "2024-07-03", "p": "holdout", "c": -22.699}, {"t": "2024-07-05", "p": "holdout", "c": -23.699}, {"t": "2024-07-08", "p": "holdout", "c": -23.578}, {"t": "2024-07-09", "p": "holdout", "c": -24.578}, {"t": "2024-07-10", "p": "holdout", "c": -24.583}, {"t": "2024-07-12", "p": "holdout", "c": -25.122}, {"t": "2024-07-16", "p": "holdout", "c": -24.083}, {"t": "2024-07-18", "p": "holdout", "c": -24.425}, {"t": "2024-07-23", "p": "holdout", "c": -24.602}, {"t": "2024-08-01", "p": "holdout", "c": -25.602}, {"t": "2024-08-12", "p": "holdout", "c": -24.743}, {"t": "2024-08-14", "p": "holdout", "c": -25.743}, {"t": "2024-08-16", "p": "holdout", "c": -24.335}, {"t": "2024-08-20", "p": "holdout", "c": -22.915}, {"t": "2024-08-21", "p": "holdout", "c": -22.315}, {"t": "2024-08-23", "p": "holdout", "c": -20.907}, {"t": "2024-08-26", "p": "holdout", "c": -21.12}, {"t": "2024-08-27", "p": "holdout", "c": -22.12}, {"t": "2024-08-29", "p": "holdout", "c": -23.12}, {"t": "2024-08-30", "p": "holdout", "c": -24.12}, {"t": "2024-09-02", "p": "holdout", "c": -24.413}, {"t": "2024-09-03", "p": "holdout", "c": -25.413}, {"t": "2024-09-04", "p": "holdout", "c": -26.413}, {"t": "2024-09-05", "p": "holdout", "c": -26.423}, {"t": "2024-09-13", "p": "holdout", "c": -26.018}, {"t": "2024-09-17", "p": "holdout", "c": -26.281}, {"t": "2024-09-20", "p": "holdout", "c": -26.073}, {"t": "2024-09-23", "p": "holdout", "c": -27.073}, {"t": "2024-09-25", "p": "holdout", "c": -27.465}, {"t": "2024-09-26", "p": "holdout", "c": -26.074}, {"t": "2024-09-27", "p": "holdout", "c": -27.074}, {"t": "2024-10-01", "p": "holdout", "c": -25.653}, {"t": "2024-10-03", "p": "holdout", "c": -25.708}, {"t": "2024-10-07", "p": "holdout", "c": -26.708}, {"t": "2024-10-08", "p": "holdout", "c": -27.708}, {"t": "2024-10-15", "p": "holdout", "c": -27.39}, {"t": "2024-10-16", "p": "holdout", "c": -27.75}, {"t": "2024-10-31", "p": "development", "c": -26.328}, {"t": "2024-11-04", "p": "development", "c": -27.328}, {"t": "2024-11-05", "p": "development", "c": -27.396}, {"t": "2024-11-11", "p": "development", "c": -25.945}, {"t": "2024-11-12", "p": "development", "c": -26.115}, {"t": "2024-11-14", "p": "development", "c": -26.951}, {"t": "2024-11-19", "p": "development", "c": -27.207}, {"t": "2024-11-20", "p": "development", "c": -28.207}, {"t": "2024-11-21", "p": "development", "c": -28.159}, {"t": "2024-11-22", "p": "development", "c": -28.092}, {"t": "2024-11-27", "p": "development", "c": -28.454}, {"t": "2024-11-28", "p": "development", "c": -28.645}, {"t": "2024-12-05", "p": "development", "c": -28.479}, {"t": "2024-12-09", "p": "development", "c": -27.924}, {"t": "2024-12-10", "p": "development", "c": -27.306}, {"t": "2024-12-13", "p": "development", "c": -26.271}, {"t": "2024-12-16", "p": "development", "c": -26.52}, {"t": "2024-12-17", "p": "development", "c": -26.231}, {"t": "2024-12-27", "p": "development", "c": -25.503}, {"t": "2024-12-30", "p": "development", "c": -24.676}, {"t": "2024-12-31", "p": "development", "c": -23.995}, {"t": "2025-01-02", "p": "development", "c": -23.024}, {"t": "2025-01-03", "p": "development", "c": -22.649}, {"t": "2025-01-09", "p": "development", "c": -22.698}, {"t": "2025-01-10", "p": "development", "c": -23.698}, {"t": "2025-01-13", "p": "development", "c": -22.7}, {"t": "2025-01-14", "p": "development", "c": -23.372}, {"t": "2025-01-15", "p": "development", "c": -23.814}, {"t": "2025-01-16", "p": "development", "c": -22.843}, {"t": "2025-01-17", "p": "development", "c": -23.545}, {"t": "2025-01-22", "p": "development", "c": -23.608}, {"t": "2025-01-23", "p": "development", "c": -22.235}, {"t": "2025-01-28", "p": "development", "c": -23.235}, {"t": "2025-01-30", "p": "development", "c": -21.82}, {"t": "2025-02-05", "p": "development", "c": -21.296}, {"t": "2025-02-06", "p": "development", "c": -21.18}, {"t": "2025-02-12", "p": "development", "c": -21.933}, {"t": "2025-02-14", "p": "development", "c": -22.933}, {"t": "2025-02-19", "p": "development", "c": -23.87}, {"t": "2025-02-21", "p": "development", "c": -24.119}, {"t": "2025-02-24", "p": "development", "c": -24.536}, {"t": "2025-02-27", "p": "development", "c": -24.135}, {"t": "2025-02-28", "p": "development", "c": -23.992}, {"t": "2025-03-04", "p": "development", "c": -23.865}, {"t": "2025-03-06", "p": "development", "c": -24.241}, {"t": "2025-03-07", "p": "development", "c": -24.422}, {"t": "2025-03-10", "p": "development", "c": -24.573}, {"t": "2025-03-11", "p": "development", "c": -24.167}, {"t": "2025-03-12", "p": "development", "c": -25.167}, {"t": "2025-03-14", "p": "development", "c": -26.167}, {"t": "2025-03-17", "p": "development", "c": -26.049}, {"t": "2025-03-18", "p": "development", "c": -25.572}, {"t": "2025-03-19", "p": "development", "c": -25.895}, {"t": "2025-03-20", "p": "development", "c": -25.962}, {"t": "2025-03-24", "p": "development", "c": -26.962}, {"t": "2025-03-25", "p": "development", "c": -27.057}, {"t": "2025-03-27", "p": "development", "c": -26.455}, {"t": "2025-04-04", "p": "development", "c": -27.455}, {"t": "2025-04-11", "p": "development", "c": -27.29}, {"t": "2025-04-17", "p": "development", "c": -25.835}, {"t": "2025-04-21", "p": "development", "c": -25.423}, {"t": "2025-04-30", "p": "development", "c": -25.827}, {"t": "2025-05-01", "p": "development", "c": -25.868}, {"t": "2025-05-02", "p": "development", "c": -25.959}, {"t": "2025-05-05", "p": "development", "c": -24.49}, {"t": "2025-05-12", "p": "development", "c": -24.03}, {"t": "2025-05-16", "p": "development", "c": -23.362}, {"t": "2025-05-20", "p": "development", "c": -21.895}, {"t": "2025-05-22", "p": "development", "c": -21.306}, {"t": "2025-05-26", "p": "development", "c": -21.66}, {"t": "2025-05-27", "p": "development", "c": -21.553}, {"t": "2025-05-28", "p": "development", "c": -22.231}, {"t": "2025-05-29", "p": "development", "c": -21.468}, {"t": "2025-06-02", "p": "development", "c": -20.885}, {"t": "2025-06-05", "p": "development", "c": -21.639}, {"t": "2025-06-06", "p": "development", "c": -20.186}, {"t": "2025-06-09", "p": "development", "c": -20.397}, {"t": "2025-06-10", "p": "development", "c": -20.584}, {"t": "2025-06-11", "p": "development", "c": -21.01}, {"t": "2025-06-12", "p": "development", "c": -22.01}, {"t": "2025-06-16", "p": "development", "c": -21.723}, {"t": "2025-06-25", "p": "development", "c": -21.837}, {"t": "2025-06-26", "p": "development", "c": -22.837}, {"t": "2025-06-27", "p": "development", "c": -22.678}, {"t": "2025-07-01", "p": "development", "c": -22.189}, {"t": "2025-07-07", "p": "development", "c": -22.763}, {"t": "2025-07-08", "p": "development", "c": -21.345}, {"t": "2025-07-17", "p": "development", "c": -21.723}, {"t": "2025-07-18", "p": "development", "c": -21.176}, {"t": "2025-07-24", "p": "development", "c": -21.421}, {"t": "2025-07-25", "p": "development", "c": -20.469}, {"t": "2025-07-29", "p": "development", "c": -20.456}, {"t": "2025-07-31", "p": "development", "c": -21.254}, {"t": "2025-08-05", "p": "development", "c": -22.254}, {"t": "2025-08-06", "p": "development", "c": -22.961}, {"t": "2025-08-07", "p": "development", "c": -23.094}, {"t": "2025-08-11", "p": "development", "c": -22.511}, {"t": "2025-08-13", "p": "development", "c": -22.329}, {"t": "2025-08-14", "p": "development", "c": -21.559}, {"t": "2025-08-20", "p": "development", "c": -20.622}, {"t": "2025-08-28", "p": "development", "c": -19.562}, {"t": "2025-08-29", "p": "development", "c": -20.562}, {"t": "2025-09-05", "p": "development", "c": -21.562}, {"t": "2025-09-08", "p": "development", "c": -20.117}, {"t": "2025-09-10", "p": "development", "c": -20.31}, {"t": "2025-09-11", "p": "development", "c": -20.64}, {"t": "2025-09-16", "p": "development", "c": -21.012}, {"t": "2025-09-17", "p": "development", "c": -21.592}, {"t": "2025-09-22", "p": "development", "c": -21.392}, {"t": "2025-09-23", "p": "development", "c": -21.146}, {"t": "2025-09-25", "p": "development", "c": -22.146}, {"t": "2025-09-30", "p": "development", "c": -22.664}, {"t": "2025-10-01", "p": "development", "c": -22.914}, {"t": "2025-10-02", "p": "development", "c": -23.914}, {"t": "2025-10-03", "p": "development", "c": -23.456}, {"t": "2025-10-07", "p": "development", "c": -24.456}, {"t": "2025-10-10", "p": "development", "c": -24.673}, {"t": "2025-10-13", "p": "development", "c": -24.268}, {"t": "2025-10-15", "p": "development", "c": -24.319}, {"t": "2025-10-21", "p": "development", "c": -22.837}, {"t": "2025-10-23", "p": "development", "c": -23.837}, {"t": "2025-10-24", "p": "development", "c": -24.401}, {"t": "2025-10-27", "p": "development", "c": -22.922}, {"t": "2025-10-28", "p": "development", "c": -23.497}, {"t": "2025-10-29", "p": "development", "c": -23.743}, {"t": "2025-10-30", "p": "development", "c": -23.651}, {"t": "2025-11-05", "p": "development", "c": -23.676}, {"t": "2025-11-13", "p": "development", "c": -24.234}, {"t": "2025-11-18", "p": "development", "c": -24.111}, {"t": "2025-11-19", "p": "development", "c": -24.33}, {"t": "2025-11-25", "p": "development", "c": -24.443}, {"t": "2025-11-28", "p": "development", "c": -25.443}, {"t": "2025-12-01", "p": "development", "c": -26.443}, {"t": "2025-12-02", "p": "development", "c": -27.443}, {"t": "2025-12-03", "p": "development", "c": -28.443}, {"t": "2025-12-09", "p": "development", "c": -28.099}, {"t": "2025-12-10", "p": "development", "c": -27.792}, {"t": "2025-12-12", "p": "development", "c": -26.33}, {"t": "2025-12-18", "p": "development", "c": -27.074}, {"t": "2025-12-30", "p": "development", "c": -27.41}, {"t": "2026-01-02", "p": "development", "c": -28.41}, {"t": "2026-01-05", "p": "development", "c": -28.083}, {"t": "2026-01-23", "p": "development", "c": -28.828}, {"t": "2026-02-20", "p": "development", "c": -29.828}, {"t": "2026-03-03", "p": "development", "c": -28.339}, {"t": "2026-03-04", "p": "development", "c": -28.827}, {"t": "2026-03-12", "p": "development", "c": -29.827}, {"t": "2026-03-13", "p": "development", "c": -29.44}, {"t": "2026-03-16", "p": "development", "c": -29.575}, {"t": "2026-03-18", "p": "development", "c": -28.1}, {"t": "2026-04-01", "p": "development", "c": -27.829}, {"t": "2026-04-06", "p": "development", "c": -27.867}, {"t": "2026-04-07", "p": "development", "c": -28.867}, {"t": "2026-04-08", "p": "development", "c": -28.35}, {"t": "2026-04-13", "p": "development", "c": -28.638}, {"t": "2026-04-14", "p": "development", "c": -28.303}, {"t": "2026-04-15", "p": "development", "c": -28.503}, {"t": "2026-04-29", "p": "development", "c": -27.032}, {"t": "2026-04-30", "p": "development", "c": -26.603}, {"t": "2026-05-01", "p": "development", "c": -27.603}, {"t": "2026-05-04", "p": "development", "c": -27.098}, {"t": "2026-05-05", "p": "development", "c": -26.628}, {"t": "2026-05-18", "p": "development", "c": -26.783}, {"t": "2026-05-21", "p": "development", "c": -26.687}, {"t": "2026-05-26", "p": "development", "c": -26.595}, {"t": "2026-05-27", "p": "development", "c": -25.118}, {"t": "2026-05-29", "p": "development", "c": -24.077}, {"t": "2026-06-01", "p": "development", "c": -23.288}, {"t": "2026-06-03", "p": "development", "c": -23.458}, {"t": "2026-06-10", "p": "development", "c": -22.694}, {"t": "2026-06-15", "p": "development", "c": -22.382}, {"t": "2026-06-16", "p": "development", "c": -22.884}, {"t": "2026-06-18", "p": "development", "c": -22.538}, {"t": "2026-06-23", "p": "development", "c": -22.811}, {"t": "2026-06-26", "p": "development", "c": -21.961}, {"t": "2026-06-29", "p": "development", "c": -21.848}, {"t": "2026-07-06", "p": "development", "c": -21.79}, {"t": "2026-07-08", "p": "development", "c": -20.632}, {"t": "2026-07-09", "p": "development", "c": -20.414}, {"t": "2026-07-10", "p": "development", "c": -20.056}, {"t": "2026-07-15", "p": "development", "c": -21.056}, {"t": "2026-07-23", "p": "development", "c": -19.589}, {"t": "2026-07-24", "p": "development", "c": -19.29}, {"t": "2026-07-28", "p": "development", "c": -19.171}, {"t": "2026-07-31", "p": "development", "c": -18.691}, {"t": "2026-08-07", "p": "development", "c": -18.15}, {"t": "2026-08-12", "p": "development", "c": -18.139}, {"t": "2026-08-21", "p": "development", "c": -17.865}, {"t": "2026-08-26", "p": "development", "c": -17.618}, {"t": "2026-08-27", "p": "development", "c": -17.598}, {"t": "2026-09-01", "p": "development", "c": -16.123}, {"t": "2026-09-08", "p": "development", "c": -16.166}, {"t": "2026-09-09", "p": "development", "c": -16.104}, {"t": "2026-09-14", "p": "development", "c": -14.631}, {"t": "2026-09-15", "p": "development", "c": -14.617}, {"t": "2026-09-17", "p": "development", "c": -14.099}, {"t": "2026-09-21", "p": "development", "c": -14.024}, {"t": "2026-09-22", "p": "development", "c": -14.275}, {"t": "2026-09-23", "p": "development", "c": -13.668}, {"t": "2026-09-24", "p": "development", "c": -13.236}, {"t": "2026-09-30", "p": "development", "c": -14.15}, {"t": "2026-10-05", "p": "development", "c": -14.624}, {"t": "2026-10-06", "p": "development", "c": -14.684}, {"t": "2026-10-07", "p": "development", "c": -14.297}, {"t": "2026-10-12", "p": "development", "c": -14.019}, {"t": "2026-10-16", "p": "development", "c": -14.16}, {"t": "2026-10-27", "p": "development", "c": -15.16}, {"t": "2026-10-29", "p": "development", "c": -15.273}, {"t": "2026-11-03", "p": "development", "c": -16.273}, {"t": "2026-11-10", "p": "development", "c": -14.801}, {"t": "2026-11-12", "p": "development", "c": -13.322}], "holdEnd": "2024-10-16"}</script>
+<script>
+(function () {
+  "use strict";
+  var data = JSON.parse(document.getElementById("page-data").textContent);
+  var tip = document.getElementById("tip");
+  var tipTitle = tip.querySelector("strong"), tipText = tip.querySelector("span");
+  function showTip(value, label, x, y) {
+    tipTitle.textContent = value; tipText.textContent = label;
+    tip.style.opacity = "1";
+    var w = tip.offsetWidth, h = tip.offsetHeight;
+    var left = Math.min(Math.max(8, x + 14), window.innerWidth - w - 8);
+    var top = y - h - 12 < window.scrollY + 8 ? y + 16 : y - h - 12;
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+  function hideTip() { tip.style.opacity = "0"; }
+
+  // per-bar tooltips (hover and keyboard focus)
+  document.querySelectorAll(".bar").forEach(function (el) {
+    function show(ev) {
+      var r = el.getBoundingClientRect();
+      var x = ev && ev.pageX !== undefined && ev.type !== "focus" ? ev.pageX : r.left + window.scrollX + r.width / 2;
+      var y = ev && ev.pageY !== undefined && ev.type !== "focus" ? ev.pageY : r.top + window.scrollY;
+      showTip(el.dataset.tip, el.dataset.tipTitle, x, y);
+    }
+    el.addEventListener("pointermove", show);
+    el.addEventListener("focus", show);
+    el.addEventListener("pointerleave", hideTip);
+    el.addEventListener("blur", hideTip);
+  });
+
+  // cumulative-R line with a crosshair
+  var box = document.getElementById("curve");
+  var pts = data.curve;
+  if (!pts.length) return;
+  var NS = "http://www.w3.org/2000/svg";
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function fmt(v) { return (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(1) + "R"; }
+  var times = pts.map(function (p) { return Date.parse(p.t); });
+  var vals = pts.map(function (p) { return p.c; });
+  var holdEnd = data.holdEnd ? Date.parse(data.holdEnd) : null;
+  var holdTotal = 0;
+  pts.forEach(function (p) { if (p.p === "holdout") holdTotal = p.c; });
+
+  function draw() {
+    box.querySelectorAll("svg").forEach(function (s) { s.remove(); });
+    var W = box.clientWidth, narrow = W < 560, H = Math.max(240, Math.min(340, W * 0.5));
+    var m = { l: 46, r: 58, t: narrow ? 48 : 30, b: 28 };
+    var t0 = times[0], t1 = times[times.length - 1];
+    var lo = Math.min(0, Math.min.apply(null, vals)), hi = Math.max(0, Math.max.apply(null, vals));
+    var step = [1, 2, 5, 10, 20, 25, 50].find(function (s) { return (hi - lo) / s <= 6; }) || 50;
+    lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+    function X(t) { return m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r); }
+    function Y(v) { return m.t + (hi - v) / (hi - lo) * (H - m.t - m.b); }
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, height: H, "aria-hidden": "true" }, box);
+    if (holdEnd) {
+      el("rect", { x: m.l, y: m.t, width: X(holdEnd) - m.l, height: H - m.t - m.b, fill: "var(--wash)" }, svg);
+      // on narrow screens the two period labels go on separate rows so they never collide
+      var a = el("text", { x: m.l + 6, y: m.t - (narrow ? 28 : 10), "class": "band-label" }, svg);
+      a.textContent = (narrow ? "Holdout: " : "Untouched holdout: ") + fmt(holdTotal);
+      var b = el("text", { x: W - m.r, y: m.t - 10, "class": "band-label", "text-anchor": "end" }, svg);
+      b.textContent = "2024–26: " + fmt(vals[vals.length - 1] - holdTotal);
+    }
+    for (var v = lo; v <= hi + 1e-9; v += step) {
+      el("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), stroke: v === 0 ? "var(--axis)" : "var(--grid)", "stroke-width": 1 }, svg);
+      var tx = el("text", { x: m.l - 8, y: Y(v) + 4, "text-anchor": "end" }, svg);
+      tx.textContent = v === 0 ? "0" : (v > 0 ? "+" : "−") + Math.abs(v);
+    }
+    var y0 = new Date(t0).getUTCFullYear() + 1, y1 = new Date(t1).getUTCFullYear();
+    for (var y = y0; y <= y1; y++) {
+      var ty = Date.UTC(y, 0, 1), xx = X(ty);
+      if (xx < m.l + 20 || xx > W - m.r - 10) continue;
+      var yt = el("text", { x: xx, y: H - 8, "text-anchor": "middle" }, svg);
+      yt.textContent = String(y);
+    }
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + X(times[i]).toFixed(1) + " " + Y(p.c).toFixed(1); }).join("");
+    el("path", { d: d, fill: "none", stroke: "var(--series-1)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    var last = pts.length - 1;
+    el("circle", { cx: X(times[last]), cy: Y(vals[last]), r: 4, fill: "var(--series-1)", stroke: "var(--surface)", "stroke-width": 2 }, svg);
+    var end = el("text", { x: X(times[last]) + 8, y: Y(vals[last]) + 4 }, svg);
+    end.textContent = fmt(vals[last]);
+    var cross = el("line", { y1: m.t, y2: H - m.b, stroke: "var(--axis)", "stroke-width": 1, opacity: 0 }, svg);
+    var dot = el("circle", { r: 4, fill: "var(--series-1)", stroke: "var(--surface)", "stroke-width": 2, opacity: 0 }, svg);
+    var hit = el("rect", { x: m.l, y: 0, width: W - m.l - m.r, height: H, fill: "transparent" }, svg);
+    hit.addEventListener("pointermove", function (ev) {
+      var r = svg.getBoundingClientRect();
+      var t = t0 + (ev.clientX - r.left - m.l) / (W - m.l - m.r) * (t1 - t0);
+      var i = 0, best = Infinity;
+      for (var k = 0; k < times.length; k++) { var dd = Math.abs(times[k] - t); if (dd < best) { best = dd; i = k; } }
+      var cx = X(times[i]), cy = Y(vals[i]);
+      cross.setAttribute("x1", cx); cross.setAttribute("x2", cx); cross.setAttribute("opacity", 1);
+      dot.setAttribute("cx", cx); dot.setAttribute("cy", cy); dot.setAttribute("opacity", 1);
+      showTip(fmt(vals[i]) + " cumulative",
+              pts[i].t + (pts[i].p === "holdout" ? " · holdout" : " · 2024–26"),
+              r.left + window.scrollX + cx, r.top + window.scrollY + cy);
+    });
+    hit.addEventListener("pointerleave", function () { cross.setAttribute("opacity", 0); dot.setAttribute("opacity", 0); hideTip(); });
+  }
+  draw();
+  var timer;
+  window.addEventListener("resize", function () { clearTimeout(timer); timer = setTimeout(draw, 120); });
+})();
+</script>
+</body>
+</html>

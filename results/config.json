@@ -23,5 +23,6 @@
   },
   "is_fraction": 0.7,
   "train_months": 12,
-  "test_months": 3
+  "test_months": 3,
+  "holdout_end": "2024-10-21"
 }
