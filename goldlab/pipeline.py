@@ -192,11 +192,14 @@ def holdout_months(hold: pd.DataFrame | None) -> float:
     return (hold.index[-1] - hold.index[0]).days / 30.44
 
 
-def run_holdout(cls, hold: pd.DataFrame, cfg: RunConfig) -> dict:
+def run_holdout(cls, hold: pd.DataFrame, cfg: RunConfig, out: Path | None = None) -> dict:
     """Default parameters, run once on the holdout. No tuning of any kind."""
     sig = cls().signals(hold)
     n = len(hold)
-    return {"Holdout (default)": summarize(run_window(hold, sig, 0, n, cfg.costs, cfg.risk)),
+    res = run_window(hold, sig, 0, n, cfg.costs, cfg.risk)
+    if out is not None:
+        res.trades.to_csv(out / f"trades_{cls.name}_holdout.csv", index=False)
+    return {"Holdout (default)": summarize(res),
             "Holdout 2x costs": summarize(run_window(hold, sig, 0, n, _stress(cfg.costs), cfg.risk))}
 
 
@@ -479,7 +482,7 @@ def run(df: pd.DataFrame, q: DataQuality, cfg: RunConfig, out: Path, report_path
         print(f"[goldlab] {cls.name} ...", flush=True)
         rep = analyse_strategy(cls, dev, cfg, out)
         if hold is not None:
-            rep.holdout = run_holdout(cls, hold, cfg)
+            rep.holdout = run_holdout(cls, hold, cfg, out)
         reports.append(rep)
     apply_adoption(reports, months)
     summary = {rep.name: {"verdict": rep.verdict, "stats": rep.stats,
