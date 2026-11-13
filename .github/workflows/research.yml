@@ -1,8 +1,10 @@
 name: research
 
 # Real-data research run:
-#   1. download >= 2 years of XAUUSD history (Twelve Data, the bot's own live feed;
-#      falls back to Dukascopy, which tends to rate-limit GitHub's runners)
+#   1. download 4 years of XAUUSD history (Twelve Data, the bot's own live feed;
+#      falls back to Dukascopy, which tends to rate-limit GitHub's runners). Bars
+#      before 2024-10-21 are the untouched holdout (docs/regime-switch-test.md);
+#      everything after is the development window, analysed as in round 1
 #   2. run the research lab on 15-minute bars (the bot's timeframe) -> REPORT.md + results/
 #   3. replay the bot's exact live code path over the last 6 months and check it
 #      matches the backtest -> results/replay_check.md
@@ -15,8 +17,8 @@ on:
   workflow_dispatch:
     inputs:
       years:
-        description: "Years of history to download"
-        default: "2"
+        description: "Years of history to download (4 = 2-year holdout + 2-year development window)"
+        default: "4"
       source:
         description: "twelvedata (default, same feed as the bot) or dukascopy"
         default: "twelvedata"
@@ -36,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
-      YEARS: ${{ github.event.inputs.years || '2' }}
+      YEARS: ${{ github.event.inputs.years || '4' }}
       SOURCE: ${{ github.event.inputs.source || 'twelvedata' }}
       GOLDBOT_FORBID_LIVE: "1"
     steps:
