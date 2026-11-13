@@ -1,34 +1,7 @@
 {
  "engine": {
   "equity": 10037.94381821428,
-  "pending": [
-   {
-    "side": 1,
-    "kind": "stop",
-    "price": 3928.7636785357145,
-    "stop_price": null,
-    "stop_dist": 49.2574985357145,
-    "target_price": null,
-    "target_r": 1.5,
-    "expires": "2026-11-13T11:00:00+00:00",
-    "group": "lb20261113",
-    "tag": "long_break",
-    "reason": "Break above Asia range 3879.51-3923.92 (width 44.41 = 0.46x daily ATR); London-open breakout, valid until 11:00 UTC"
-   },
-   {
-    "side": -1,
-    "kind": "stop",
-    "price": 3874.6629514642855,
-    "stop_price": null,
-    "stop_dist": 49.2574985357145,
-    "target_price": null,
-    "target_r": 1.5,
-    "expires": "2026-11-13T11:00:00+00:00",
-    "group": "lb20261113",
-    "tag": "short_break",
-    "reason": "Break below Asia range 3879.51-3923.92 (width 44.41 = 0.46x daily ATR); London-open breakout, valid until 11:00 UTC"
-   }
-  ],
+  "pending": [],
   "pos": null,
   "day": "2026-11-13T00:00:00",
   "day_start_equity": 10037.94381821428,
@@ -183,7 +156,7 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-11-13T10:45:00+00:00"
+  "last_time": "2026-11-13T11:00:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
