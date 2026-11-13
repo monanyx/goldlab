@@ -1,14 +1,58 @@
-# goldlab + goldbot
+# goldlab
 
-This repo has two parts:
+**An automated research lab and live paper-trading bot for spot gold (XAU/USD),
+built to answer one question honestly: can simple intraday rules make money
+after trading costs?**
 
-- **goldbot** is an XAUUSD (spot gold) trading bot. It ships in **signal mode**
-  (Telegram alerts only). It can also run in **paper mode** (virtual trades
-  with P&L tracking) and in **live mode**, which places orders on a
-  **Capital.com demo account only**.
+**[See the results page →](https://monanyx.github.io/goldlab/)**
+
+I tested 8 strategies on 4 years of 15-minute price data. Every pass/fail rule
+was committed to git *before* the results existed, and the final test used two
+years of data no earlier run had touched. **None of the 8 made money on that
+untouched data**, including the strategy the bot was trading. The lab caught it
+while the bot was still in paper mode, so no real money was at risk.
+
+| | Oct 2024 – Nov 2026 | Untouched holdout, Oct 2022 – Oct 2024 |
+|---|---:|---:|
+| London breakout (the bot's strategy) | +0.07R a trade, +14.6% | −0.10R a trade, −24.9% |
+| Regime switch (round 2) | −0.25R a trade | −0.09R a trade |
+| Strategies profitable | 5 of 8 | **0 of 8** |
+
+*R = the amount risked on one trade. Full numbers: [REPORT.md](REPORT.md).*
+
+### What this project demonstrates
+
+- **Research rigour.** A bar-by-bar backtesting engine with no look-ahead and
+  pessimistic fills; in-sample/out-of-sample splits, rolling walk-forward
+  re-tuning, double-cost stress tests and parameter-robustness checks;
+  pre-registered hypotheses ([round 1](docs/improvement-tests.md),
+  [round 2](docs/regime-switch-test.md)) and an untouched holdout.
+- **Production automation.** A scheduled bot on GitHub Actions that keeps its
+  state on a git branch, sends Telegram alerts, accepts `/stop` `/resume`
+  `/status` commands, paper-trades, and has a Capital.com demo-account adapter
+  and a Docker image for running on a server.
+- **Proof that live = backtest.** One engine runs both. A replay test runs the
+  bot's exact live code over real data (fresh process per run, saved state,
+  late and skipped runs) and requires identical trades: 49 of 49 on the last
+  6 months.
+- **Safety by design.** Risk limits live in code and can't be loosened by
+  configuration (1% risk per trade, stop loss on every order, 3% daily loss
+  limit, max 3 trades a day); the broker URL is hard-wired to the demo server;
+  live mode needs two separate switches; there's a kill switch.
+- **Tested.** 127 automated tests run on every pull request.
+
+**Built with:** Python, pandas, NumPy, Matplotlib, pytest, GitHub Actions,
+Docker, Telegram Bot API, Twelve Data API, Capital.com REST API (demo).
+
+### The two parts
+
+- **goldbot** is the trading bot. It ships in **signal mode** (Telegram alerts
+  only). It can also run in **paper mode** (virtual trades with P&L tracking)
+  and in **live mode**, which places orders on a **Capital.com demo account
+  only**.
 - **goldlab** is the research lab: backtests, out-of-sample tests, walk-forward
-  tests and the `REPORT.md` verdict. The bot runs the lab's engine, so both
-  make the same decisions.
+  tests, the untouched holdout and the `REPORT.md` verdict. The bot runs the
+  lab's engine, so both make the same decisions.
 
 > **No strategy has a proven edge.** [`REPORT.md`](REPORT.md) tested 8
 > strategies on 4 years of real 15-minute XAU/USD data, after costs: a

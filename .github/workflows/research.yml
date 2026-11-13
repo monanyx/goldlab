@@ -8,7 +8,8 @@ name: research
 #   2. run the research lab on 15-minute bars (the bot's timeframe) -> REPORT.md + results/
 #   3. replay the bot's exact live code path over the last 6 months and check it
 #      matches the backtest -> results/replay_check.md
-#   4. commit REPORT.md and results/ back (never directly to main: a run started
+#   4. rebuild the public results page (docs/index.html, scripts/build_site.py)
+#   5. commit REPORT.md, results/ and the page back (never directly to main: a run started
 #      from main pushes to the `research-results` branch instead)
 #
 # Start it from Actions -> research -> Run workflow. A push to a claude/** working
@@ -53,7 +54,7 @@ jobs:
           cache-dependency-path: pyproject.toml
 
       - name: Install
-        run: pip install -e .
+        run: pip install -e ".[test]"
 
       - name: Download price history
         env:
@@ -94,6 +95,9 @@ jobs:
           python -m goldbot --config goldbot.toml replay --data data/ \
             --start "$(date -u -d '-6 months' +%Y-%m-%d)" --out results/replay_check.md
 
+      - name: Build the results page (docs/index.html)
+        run: python scripts/build_site.py
+
       - name: Upload data and results
         if: always()
         uses: actions/upload-artifact@v4
@@ -103,6 +107,7 @@ jobs:
             data/*.csv
             REPORT.md
             results/
+            docs/index.html
           if-no-files-found: ignore
           retention-days: 90
 
@@ -112,7 +117,7 @@ jobs:
           [ -f REPORT.md ] || { echo "no report produced"; exit 0; }
           git config user.name "goldlab-research"
           git config user.email "goldlab-research@users.noreply.github.com"
-          git add -f REPORT.md results
+          git add -f REPORT.md results docs/index.html
           git commit -qm "Research results: ${YEARS}y XAUUSD M15 from ${DATA_SOURCE:-unknown source} (run ${{ github.run_id }})" \
             || { echo "results unchanged"; exit 0; }
           BRANCH="${GITHUB_REF_NAME}"
