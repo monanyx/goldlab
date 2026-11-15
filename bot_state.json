@@ -3,7 +3,7 @@
   "equity": 10037.94381821428,
   "pending": [],
   "pos": null,
-  "day": "2026-11-13T00:00:00",
+  "day": "2026-11-16T00:00:00",
   "day_start_equity": 10037.94381821428,
   "day_pnl": 0.0,
   "day_trades": 0,
@@ -156,7 +156,7 @@
    "size_zero": 0,
    "invalid_levels": 0
   },
-  "last_time": "2026-11-13T21:45:00+00:00"
+  "last_time": "2026-11-15T22:00:00+00:00"
  },
  "mode": "paper",
  "strategy": "london_breakout",
